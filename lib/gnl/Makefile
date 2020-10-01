@@ -1,4 +1,4 @@
-NAME = gnl.a
+NAME = libgnl.a
 FLAGS = -Wall -Werror -Wextra
 OPT = -I get_next_line.h
 

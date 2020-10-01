@@ -10,11 +10,14 @@ INC_PATH=./include/ $(LIB_PATH)libft/  $(LIB_PATH)gnl/
 
 SRC_NAME=$(shell find $(SRC_PATH) -name "*.c" | rev | cut -d '/' -f1 | rev)
 OBJ_NAME=$(patsubst %.c, %.o, $(SRC_NAME))
+LIB_NAME= libft gnl
 
 SRCS=$(shell find $(SRC_PATH) -name "*.c")
 OBJS=$(patsubst %.c, %.o, $(SRCS))
 OBJ=$(addprefix $(OBJ_PATH), $(OBJ_NAME))
 INC=$(addprefix -I, $(INC_PATH))
+LIBS=$(addprefix $(LIB_PATH), $(LIB_NAME))
+LIB=$(addprefix -L, $(LIBS))
 
 all: $(NAME)
 
@@ -24,7 +27,7 @@ $(NAME): $(OBJS)
 	@printf "done\ngnl..."
 	@make -C $(LIB_PATH)gnl > /dev/null 2>&1
 	@printf "done\nminishell..."
-	@gcc $(COMP_FLAG) $(INC) $(GNL) $(LIBFT) $(OBJ) -o $(NAME)
+	@gcc $(COMP_FLAG) $(INC) $(LIB) -lft -lgnl $(OBJ) -o $(NAME)
 	@echo done
 
 %.o: %.c

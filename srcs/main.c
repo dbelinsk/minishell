@@ -23,6 +23,8 @@ int				main()
 			return (m_error());
 		if (!ft_strncmp("exit", line, 4))
 			return (m_exit(&line));
+		free(line);
+		line = NULL;
 	}
 	return (0);
 }
