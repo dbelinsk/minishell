@@ -1,6 +1,6 @@
 NAME = libgnl.a
 FLAGS = -Wall -Werror -Wextra
-OPT = -I get_next_line.h
+OPT = -I .
 
 SRC = $(shell find . -name '*.c' | rev | cut -d '/' -f1 | rev)
 OBJ = $(patsubst %.c,%.o,$(SRC))

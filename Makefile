@@ -27,7 +27,7 @@ $(NAME): $(OBJS)
 	@printf "done\ngnl..."
 	@make -C $(LIB_PATH)gnl > /dev/null 2>&1
 	@printf "done\nminishell..."
-	@gcc $(COMP_FLAG) $(INC) $(LIB) -lft -lgnl $(OBJ) -o $(NAME)
+	@gcc $(COMP_FLAG) $(INC) $(LIB) $(OBJ) -lft -lgnl -o $(NAME)
 	@echo done
 
 %.o: %.c

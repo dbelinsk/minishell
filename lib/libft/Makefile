@@ -3,16 +3,16 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dbelinsk <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: mpernia- <mpernia-@student.42madrid.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/16 11:53:35 by dbelinsk          #+#    #+#              #
-#    Updated: 2019/11/20 13:22:58 by dbelinsk         ###   ########.fr        #
+#    Updated: 2020/10/01 14:39:52 by mpernia-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = libft.a
 FLAGS = -Wall -Werror -Wextra
-OPT = -I libft.h
+OPT = -I .
 
 SRC = $(shell find . -name 'ft_*.c' | grep -v 'bonus' | rev | cut -d '/' -f1 | rev)
 OBJ = $(patsubst %.c,%.o,$(SRC))
