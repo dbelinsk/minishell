@@ -17,7 +17,7 @@ void		echo(char *str)
 	if (child == 0)
 	{
 		int ret;
-		char *cmd[] = { "echo", str, 0 };
+		char *cmd[] = {"echo", str, 0 };
 		ret = execve ("/bin/echo", cmd, NULL);
 	}
 	else if (child > 0)
