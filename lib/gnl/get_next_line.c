@@ -12,7 +12,7 @@
 
 #include "get_next_line.h"
 
-static char				*ft_strchr(const char *s, int c)
+static char				*gnl_strchr(const char *s, int c)
 {
 	if (s == NULL)
 		return (NULL);
@@ -35,8 +35,8 @@ static void				new_line(int fd, char **s, char **line)
 	i = 0;
 	while (s[fd][i] != '\n')
 		i++;
-	*line = ft_substr(s[fd], 0, i);
-	tmp = ft_strdup(&s[fd][i + 1]);
+	*line = gnl_substr(s[fd], 0, i);
+	tmp = gnl_strdup(&s[fd][i + 1]);
 	free(s[fd]);
 	s[fd] = tmp;
 }
@@ -47,17 +47,17 @@ static int				output(int ret, int fd, char **s, char **line)
 		return (-1);
 	else if (ret == 0 && (!s[fd] || !*(s[fd])))
 	{
-		*line = ft_strdup("");
+		*line = gnl_strdup("");
 		if (s[fd])
-			ft_strdel(&s[fd]);
+			gnl_strdel(&s[fd]);
 		return (0);
 	}
-	if (ft_strchr(s[fd], '\n'))
+	if (gnl_strchr(s[fd], '\n'))
 		new_line(fd, s, line);
 	else
 	{
-		*line = ft_strdup(s[fd]);
-		ft_strdel(&s[fd]);
+		*line = gnl_strdup(s[fd]);
+		gnl_strdel(&s[fd]);
 		return (0);
 	}
 	return (1);
@@ -78,14 +78,14 @@ int						get_next_line(int fd, char **line)
 	{
 		buff[ret] = '\0';
 		if (s[fd] == NULL)
-			s[fd] = ft_strdup(buff);
+			s[fd] = gnl_strdup(buff);
 		else
 		{
-			tmp = ft_strjoin(s[fd], buff);
+			tmp = gnl_strjoin(s[fd], buff);
 			free(s[fd]);
 			s[fd] = tmp;
 		}
-		if (ft_strchr(s[fd], '\n'))
+		if (gnl_strchr(s[fd], '\n'))
 			break ;
 	}
 	free(buff);
