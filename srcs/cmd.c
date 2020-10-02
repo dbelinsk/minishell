@@ -6,7 +6,7 @@
 /*   By: mpernia- <mpernia-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/02 21:19:13 by mpernia-          #+#    #+#             */
-/*   Updated: 2020/10/02 22:43:39 by mpernia-         ###   ########.fr       */
+/*   Updated: 2020/10/03 00:05:17 by mpernia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,9 +68,9 @@ void	format_cmd(char **line)
 void	check_cmd(char **line)
 {
 	if (!ft_strncmp("echo -n ", *line, 8))
-		ft_putstr_fd("echo sin salto\n", 1);
+		echo(line, 1);
 	else if (!ft_strncmp("echo", *line, 4))
-		ft_putstr_fd("echo con salto\n", 1);
+		echo(line, 0);
 	else
 		m_error(line);
 }
