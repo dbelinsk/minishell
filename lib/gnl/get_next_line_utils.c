@@ -12,7 +12,7 @@
 
 #include "get_next_line.h"
 
-size_t				ft_strlen(const char *str)
+size_t				gnl_strlen(const char *str)
 {
 	int i;
 
@@ -22,7 +22,7 @@ size_t				ft_strlen(const char *str)
 	return (i);
 }
 
-void				ft_strdel(char **str)
+void				gnl_strdel(char **str)
 {
 	if (str != NULL && *str != NULL)
 	{
@@ -31,7 +31,7 @@ void				ft_strdel(char **str)
 	}
 }
 
-char				*ft_substr(char const *s, unsigned int start, size_t len)
+char				*gnl_substr(char const *s, unsigned int start, size_t len)
 {
 	char			*str;
 	unsigned int	i;
@@ -41,7 +41,7 @@ char				*ft_substr(char const *s, unsigned int start, size_t len)
 		if (!(str = malloc(((int)len + 1) * sizeof(char))))
 			return (NULL);
 		i = 0;
-		if (start <= ft_strlen(s))
+		if (start <= gnl_strlen(s))
 		{
 			while (i < len && s[i])
 			{
@@ -55,14 +55,14 @@ char				*ft_substr(char const *s, unsigned int start, size_t len)
 	return (NULL);
 }
 
-char				*ft_strdup(const char *s)
+char				*gnl_strdup(const char *s)
 {
 	int		i;
 	int		size;
 	char	*str;
 
 	i = 0;
-	size = ft_strlen(s);
+	size = gnl_strlen(s);
 	if (!(str = (char*)malloc(sizeof(*str) * size + 1)))
 		return (NULL);
 	while (i < size)
@@ -74,7 +74,7 @@ char				*ft_strdup(const char *s)
 	return (str);
 }
 
-char				*ft_strjoin(char const *s1, char const *s2)
+char				*gnl_strjoin(char const *s1, char const *s2)
 {
 	char	*str;
 	int		i;
@@ -82,8 +82,8 @@ char				*ft_strjoin(char const *s1, char const *s2)
 	i = 0;
 	if (s1 && s2)
 	{
-		if (!(str = (char*)malloc((ft_strlen(s1) +
-							ft_strlen(s2) + 1) * sizeof(char))))
+		if (!(str = (char*)malloc((gnl_strlen(s1) +
+							gnl_strlen(s2) + 1) * sizeof(char))))
 			return (NULL);
 		while (*s1)
 			str[i++] = *s1++;

@@ -22,10 +22,10 @@
 # endif
 
 int				get_next_line(const int fd, char **line);
-size_t			ft_strlen(const char *str);
-char			*ft_strdup(const char *s);
-char			*ft_strjoin(char const *s1, char const *s2);
-char			*ft_substr(char const *s, unsigned int start, size_t len);
-void			ft_strdel(char **str);
+size_t			gnl_strlen(const char *str);
+char			*gnl_strdup(const char *s);
+char			*gnl_strjoin(char const *s1, char const *s2);
+char			*gnl_substr(char const *s, unsigned int start, size_t len);
+void			gnl_strdel(char **str);
 
 #endif
