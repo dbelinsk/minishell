@@ -32,7 +32,7 @@ $(NAME): $(OBJS)
 
 %.o: %.c
 	@mkdir -p $(OBJ_PATH)
-	@gcc $(COMP_FLAG) $(INC) -o $@ -c $< > /dev/null 2>&1
+	@gcc $(COMP_FLAG) $(INC) -o $@ -c $<
 	@mv $@ $(OBJ_PATH)
 
 clean:
