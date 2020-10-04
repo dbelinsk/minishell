@@ -6,7 +6,7 @@
 /*   By: mpernia- <mpernia-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/02 23:18:12 by mpernia-          #+#    #+#             */
-/*   Updated: 2020/10/02 23:57:43 by mpernia-         ###   ########.fr       */
+/*   Updated: 2020/10/04 15:25:32 by mpernia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static char**	argument_builder(char** line, int n)
 	char** output;
 
 	if (!(output = (char**)ft_calloc(n + 3, sizeof(char**))))
-		return (NULL);
+		m_error(line, MALLOC_ERR);
 	if (n == 0)
 	{
 		output[0] = ft_strdup("echo");
@@ -38,11 +38,15 @@ static char**	argument_builder(char** line, int n)
 	return(output);
 }
 
-void			echo(char **line, int n)
+void			echo(char **line)
 {
 	pid_t	child = fork();
 	char**	args;
+	int n;
 
+	n = 0;
+	if (!ft_strncmp("echo -n ", *line, 8))
+		n = 1;
 	if (child == 0)
 	{
 		args = argument_builder(line, n);
@@ -51,5 +55,5 @@ void			echo(char **line, int n)
 	else if (child > 0)
 		wait(NULL);
 	else
-		ft_putstr_fd("error\n", 1);
+		m_error(line, UNDEFINED_ERR);
 }
