@@ -6,7 +6,7 @@
 /*   By: mpernia- <mpernia-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/02 21:19:01 by mpernia-          #+#    #+#             */
-/*   Updated: 2020/10/04 15:23:38 by mpernia-         ###   ########.fr       */
+/*   Updated: 2020/10/04 16:31:45 by mpernia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int main(void)
 	char *line = NULL;
 	while (1)
 	{
+		ft_printf("hola");
 		if (!get_cmd(&line))
 			return (m_error(&line, UNDEFINED_ERR));
 		if (!ft_strncmp("exit", line, 4))

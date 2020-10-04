@@ -7,6 +7,7 @@
 
 # include <get_next_line.h>
 # include <libft.h>
+# include <printf.h>
 # include <unistd.h>
 # include <stdio.h>
 # include <sys/wait.h>
