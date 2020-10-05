@@ -6,7 +6,7 @@
 /*   By: mpernia- <mpernia-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/02 21:19:13 by mpernia-          #+#    #+#             */
-/*   Updated: 2020/10/04 15:22:28 by mpernia-         ###   ########.fr       */
+/*   Updated: 2020/10/05 13:18:32 by mpernia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,7 @@ int		get_cmd(char **line)
 
 	dir = NULL;
 	dir = getcwd(dir, 0);
-	ft_putstr_fd(dir, 1);
-	ft_putstr_fd("\n$ ", 1);
+	ft_printf("%s\n$", dir);
 	free(dir);
 	if (get_next_line(1, line) < 0)
 		return (0);
