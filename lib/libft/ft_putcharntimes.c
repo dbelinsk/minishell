@@ -1,29 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   echo.c                                             :+:      :+:    :+:   */
+/*   ft_putcharntimes.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mpernia- <mpernia-@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: mpernia- <mpernia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/10/02 23:18:12 by mpernia-          #+#    #+#             */
-/*   Updated: 2020/10/05 14:44:42 by mpernia-         ###   ########.fr       */
+/*   Created: 2019/12/14 13:32:00 by mpernia-          #+#    #+#             */
+/*   Updated: 2019/12/18 12:38:05 by mpernia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-void			echo(char **line)
+int	ft_putcharntimes(char a, int n)
 {
-	pid_t	child = fork();
-	char**	args;
+	int i;
 
-	if (child == 0)
-	{
-		args = ft_split(*line, ' ');
-		execve ("/bin/echo", args, NULL);
-	}
-	else if (child > 0)
-		wait(NULL);
-	else
-		m_error(line, UNDEFINED_ERR);
+	i = n;
+	while (n-- > 0)
+		write(1, &a, 1);
+	return ((i > 0) ? i : 0);
 }

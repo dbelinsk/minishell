@@ -6,36 +6,56 @@
 #    By: mpernia- <mpernia-@student.42madrid.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/16 11:53:35 by dbelinsk          #+#    #+#              #
-#    Updated: 2020/10/01 14:39:52 by mpernia-         ###   ########.fr        #
+#    Updated: 2020/10/04 17:06:50 by mpernia-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = libft.a
-FLAGS = -Wall -Werror -Wextra
-OPT = -I .
+NAME		= 	libft.a
 
-SRC = $(shell find . -name 'ft_*.c' | grep -v 'bonus' | rev | cut -d '/' -f1 | rev)
-OBJ = $(patsubst %.c,%.o,$(SRC))
+CC			= 	gcc
+FLAGS		= 	-c -Wall -Wextra -Werror
 
-B_SRC = $(shell find . -name 'ft_*bonus.c' | rev | cut -d '/' -f1 | rev)
-B_OBJ = $(patsubst %.c,%.o,$(B_SRC))
+LIB			= 	ar rc
+RLIB		= 	ranlib
+
+PRINTF_DIR	=	./ft_printf/
+PRINTF_SRCS =	$(shell find $(PRINTF_DIR) -name "*.c" | rev |	   \
+				cut -d '/' -f1 | rev)
+
+SRCS		=	$(shell find . -maxdepth 1 -name "*.c" | rev | cut -d '/' -f1 |\
+				rev)
+
+OBJS_DIR	=	./objects/
+OBJS		=	$(addprefix $(OBJS_DIR), $(shell find $(OBJS_DIR)\
+				-name "*.o" | rev | cut -d '/' -f1 | rev))
+OBJECTS		=	$(patsubst %.c, $(OBJS_DIR)%.o, $(SRCS) $(PRINTF_SRCS))
 
 all: $(NAME)
 
-$(NAME): $(OBJ)
-	@gcc $(FLAGS) $(OPT) -c $(SRC)
-	@ar rc $(NAME) $(OBJ)
-	@ranlib $(NAME)
+$(OBJS_DIR)%.o: %.c
+	@mkdir -p $(OBJS_DIR)
+	@$(CC) $(FLAGS) -I. -c $< -o $@
 
-bonus: $(B_OBJ)
-	@gcc $(FLAGS) $(OPT) -c $(B_SRC)
-	@ar rc $(NAME) $(B_OBJ)
-	@ranlib $(NAME)
+$(OBJS_DIR)%.o: $(PRINTF_DIR)%.c
+	@mkdir -p $(OBJS_DIR)
+	@$(CC) $(FLAGS) -I$(PRINTF_DIR) -c $< -o $@
+
+$(NAME): $(OBJECTS)
+	@echo "Creating objects.."
+	@$(LIB) $(NAME) $(OBJS)
+	@echo "Creating libft.a"
+	@$(RLIB) $(NAME)
+	@echo "Complete."
+
+.PHONY: all clean fclean
 
 clean:
-	@/bin/rm -f $(OBJ) $(B_OBJ)
+	@echo "Cleaning libft objects..."
+	@rm -rf $(OBJS_DIR)
 
 fclean: clean
-	@/bin/rm -f $(NAME)
+	@echo "Cleaning libft.a"
+	@rm -f $(NAME)
 
 re: fclean all
+

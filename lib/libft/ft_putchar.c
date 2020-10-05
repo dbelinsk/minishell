@@ -1,29 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   echo.c                                             :+:      :+:    :+:   */
+/*   ft_putchar.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mpernia- <mpernia-@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: mpernia- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/10/02 23:18:12 by mpernia-          #+#    #+#             */
-/*   Updated: 2020/10/05 14:44:42 by mpernia-         ###   ########.fr       */
+/*   Created: 2019/12/05 07:33:29 by mpernia-          #+#    #+#             */
+/*   Updated: 2019/12/05 07:34:02 by mpernia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-void			echo(char **line)
+void	ft_putchar(char c)
 {
-	pid_t	child = fork();
-	char**	args;
-
-	if (child == 0)
-	{
-		args = ft_split(*line, ' ');
-		execve ("/bin/echo", args, NULL);
-	}
-	else if (child > 0)
-		wait(NULL);
-	else
-		m_error(line, UNDEFINED_ERR);
+	write(1, &c, 1);
 }

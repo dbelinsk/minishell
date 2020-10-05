@@ -6,7 +6,7 @@
 /*   By: mpernia- <mpernia-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/02 21:19:08 by mpernia-          #+#    #+#             */
-/*   Updated: 2020/10/02 22:39:57 by mpernia-         ###   ########.fr       */
+/*   Updated: 2020/10/05 13:20:11 by mpernia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,14 @@ void			put_promt()
 	free(dir);
 }
 
-int m_error(char** line)
+int m_error(char** line, int n)
 {
-	*line = ft_strjoin(*line, ": command not found\n");
-	ft_putstr_fd(*line, 1);
+	if (n == COMMAND_ERR)
+		ft_printf("%s: command not found.\n", *line);
+	else if (n == MALLOC_ERR)
+		ft_putstr_fd("Memory could not be allocated.\n", 1);
+	else
+		ft_putstr_fd("Undefined error.\n", 1);
 	return(1);
 }
 

@@ -6,7 +6,7 @@
 /*   By: mpernia- <mpernia-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/02 21:19:13 by mpernia-          #+#    #+#             */
-/*   Updated: 2020/10/03 00:05:17 by mpernia-         ###   ########.fr       */
+/*   Updated: 2020/10/05 13:18:32 by mpernia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,10 +61,8 @@ void	format_cmd(char **line)
 */
 void	check_cmd(char **line)
 {
-	if (!ft_strncmp("echo -n ", *line, 8))
-		echo(line, 1);
-	else if (!ft_strncmp("echo", *line, 4))
-		echo(line, 0);
+	if (!ft_strncmp("echo", *line, 4))
+		echo(line);
 	else
-		m_error(line);
+		m_error(line, COMMAND_ERR);
 }

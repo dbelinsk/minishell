@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dbelinsk <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: mpernia- <mpernia-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/18 19:17:32 by dbelinsk          #+#    #+#             */
-/*   Updated: 2019/11/25 11:07:18 by dbelinsk         ###   ########.fr       */
+/*   Updated: 2020/10/04 16:32:50 by mpernia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 # define LIBFT_H
 # include <stdlib.h>
 # include <string.h>
+# include <unistd.h>
+# include "./ft_printf/libftprintf.h"
 
 void				*ft_memset(void *b, int c, size_t len);
 void				ft_bzero(void *s, size_t n);
@@ -66,5 +68,11 @@ void				ft_lstclear(t_list **lst, void (*del)(void*));
 void				ft_lstiter(t_list *lst, void (*f)(void *));
 t_list				*ft_lstmap(t_list *lst, void *(*f)(void *),
 								void (*del)(void *));
+int					ft_putstr(char *s);
+char				*ft_dechex(unsigned long int n);
+int					ft_putcharntimes(char a, int n);
+void				ft_putchar(char c);
+int					ft_isupper(int c);
+char				*ft_ltoa(long long n);
 
 #endif
