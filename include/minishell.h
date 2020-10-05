@@ -13,6 +13,23 @@
 # include <sys/wait.h>
 # include <stdlib.h>
 
+typedef struct s_content
+{
+	char				*content;
+	struct s_content	*next;
+}				t_content;
+
+
+typedef struct s_command
+{
+	char				*type;
+	int					flag;		// 0 o 1
+	char				*path;
+	t_content			*content;
+	void				(*exe)();
+	struct s_comand		*next;
+}				t_command;
+
 int		get_cmd(char **line);
 int		m_exit(char **to_free);
 int		m_error(char **line, int n);
