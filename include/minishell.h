@@ -10,6 +10,8 @@
 int		get_cmd(char **line);
 int		m_exit(char **to_free);
 int		m_error(char **line);
+void	put_promt();
+
 
 void	format_cmd(char **line);
 void	check_cmd(char **line);

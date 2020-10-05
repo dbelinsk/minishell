@@ -17,13 +17,7 @@
 */
 int		get_cmd(char **line)
 {
-	char *dir;
-
-	dir = NULL;
-	dir = getcwd(dir, 0);
-	ft_putstr_fd(dir, 1);
-	ft_putstr_fd("\n$ ", 1);
-	free(dir);
+	put_promt();
 	if (get_next_line(1, line) < 0)
 		return (0);
 	return (1);

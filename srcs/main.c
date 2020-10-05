@@ -12,9 +12,24 @@
 
 #include "minishell.h"
 
+void			signal_handler(int sig)
+{
+	if (sig == SIGINT)
+	{
+		write(STDOUT_FILENO, "\033[2D\033[J\n", 10);
+		write(STDOUT_FILENO, "\033[1D", 4);
+		put_promt();
+	}
+	if (sig == SIGQUIT)
+		write(STDOUT_FILENO, "\033[2D\033[J", 7);
+}
+
 int main(void)
 {
 	char *line = NULL;
+
+	signal(SIGINT, signal_handler);
+	signal(SIGQUIT, signal_handler);
 	while (1)
 	{
 		if (!get_cmd(&line))
@@ -23,9 +38,6 @@ int main(void)
 			return (m_exit(&line));
 		format_cmd(&line);
 		check_cmd(&line);
-/*		ft_putstr_fd("[",1);
-		ft_putstr_fd(line, 1);
-		ft_putstr_fd("]\n",1);*/
 		free(line);
 		line = NULL;
 	}
