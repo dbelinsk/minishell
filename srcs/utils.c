@@ -12,6 +12,17 @@
 
 #include "minishell.h"
 
+void			put_promt()
+{
+	char *dir;
+
+	dir = NULL;
+	dir = getcwd(dir, 0);
+	write(STDOUT_FILENO, dir, strlen(dir));
+	write(STDOUT_FILENO, "\n$ ", 3);
+	free(dir);
+}
+
 int m_error(char** line, int n)
 {
 	if (n == COMMAND_ERR)
