@@ -29,6 +29,8 @@ int m_error(char** line, int n)
 		ft_printf("%s: command not found.\n", *line);
 	else if (n == MALLOC_ERR)
 		ft_putstr_fd("Memory could not be allocated.\n", 1);
+	else if (n == INIT_ERROR)
+		ft_putendl_fd("Failed to init comandline", 1);
 	else
 		ft_putstr_fd("Undefined error.\n", 1);
 	return(1);

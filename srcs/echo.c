@@ -15,11 +15,18 @@
 void			echo(char **line)
 {
 	pid_t	child = fork();
-	char**	args;
+	char	**args;
 
 	if (child == 0)
 	{
 		args = ft_split(*line, ' ');
+		/*int  i = 0;
+		while (args[i])
+		{
+			ft_printf("[%s]\n", args[i++]);
+		}*/
+
+		//->$PATH....echo, ls, ---> EXE
 		execve ("/bin/echo", args, NULL);
 	}
 	else if (child > 0)

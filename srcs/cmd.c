@@ -28,7 +28,7 @@ int		get_cmd(char **line)
 Cleans up all spaces, tabs, ...
 Result = formated cmd to work with.
 */
-void	format_cmd(char **line)
+/*void	format_cmd(char **line)
 {
 	char	*tmp;
 	char	fmt[ft_strlen(*line)];
@@ -53,7 +53,8 @@ void	format_cmd(char **line)
 	fmt[i] = 0;
 	free(*line);
 	*line = ft_strdup(fmt);
-}
+	printf("[%s]\n", *line);
+}*/
 
 /*
 **Check if echo have a /n or not, if any of those is true call m_error

@@ -26,18 +26,21 @@ void			signal_handler(int sig)
 
 int main(void)
 {
-	char *line = NULL;
+	t_command	*cmd;
+	char 		*line = NULL;
 
-	signal(SIGINT, signal_handler);
+	//signal(SIGINT, signal_handler);
 	signal(SIGQUIT, signal_handler);
 	while (1)
 	{
 		if (!get_cmd(&line))
 			return (m_error(&line, UNDEFINED_ERR));
-		if (!ft_strncmp("exit", line, 4))
-			return (m_exit(&line));
-		format_cmd(&line);
-		check_cmd(&line);
+		if (!init(&cmd, line))
+			return (m_error(&line, INIT_ERROR));
+		//if (!ft_strncmp("exit", line, 4))
+		//	return (m_exit(&line));
+		//format_cmd(&line);
+		//check_cmd(&line);
 		free(line);
 		line = NULL;
 	}
