@@ -12,11 +12,11 @@
 # include <unistd.h>
 # include <stdio.h>
 # include <sys/wait.h>
+# include <sys/stat.h>
 # include <stdlib.h>
 # define NONE		0
-# define COL		1
-# define SEMCOL		2
-# define NL			3
+# define SEMCOL		1
+# define PIPE		2
 
 
 typedef struct 		s_command
@@ -30,7 +30,7 @@ typedef struct 		s_command
 	struct s_command	*next;
 }					t_command;
 
-int		init(t_command **cmd, char *line);
+void	init(t_command **cmd, char *line, char *paths);
 int		execute(t_command cmd);
 
 int		get_cmd(char **line);
@@ -42,12 +42,12 @@ void	format_cmd(char **line);
 void	check_cmd(char **line);
 void	echo(char **line);
 
-char		*get_type();
-char		*get_path();
-char		*get_content();
-int			get_flag();
-int			get_sep();
-void		*get_exe(t_command cmd);
+char		*get_type(char **line);
+char		*get_path(char *type, char *paths);
+char		*get_content(char **line);
+int			get_flag(char **line);
+int			get_sep(char **line);
+void		*get_exe(char *type);
 
 
 #endif

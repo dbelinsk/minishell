@@ -5,12 +5,11 @@
  */
 int				execute(t_command cmd)
 {
-	ft_putendl_fd(cmd.type, 1);
-	ft_putendl_fd(cmd.path, 1);
-	ft_putendl_fd(cmd.content, 1);
-	ft_putnbr_fd(cmd.flag, 1);
-	ft_putchar('\n');
-	ft_putnbr_fd(cmd.sep, 1);
-	ft_putchar('\n');
+	printf("type = [%s]\n", cmd.type);
+	printf("path = [%s]\n", cmd.path);
+	printf("content = [%s]\n", cmd.content);
+	printf("flag = [%d]\n", cmd.flag);
+	printf("sep = [%d]\n", cmd.sep);
+	printf("***************************\n");
 	return (1);
 }
