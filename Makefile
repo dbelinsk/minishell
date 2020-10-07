@@ -27,12 +27,17 @@ $(NAME): $(OBJS)
 	@printf "done\ngnl..."
 	@make -C $(LIB_PATH)gnl > /dev/null 2>&1
 	@printf "done\nminishell..."
-	@gcc $(COMP_FLAG) $(INC) $(LIB) $(OBJ) -lft -lgnl -o $(NAME)
+	#@gcc $(COMP_FLAG) $(INC) $(LIB) $(OBJ) -lft -lgnl -o $(NAME)
+	@gcc $(INC) $(LIB) $(OBJ) -lft -lgnl -o $(NAME)
 	@echo done
+
+soft:
+	@gcc $(COMP_FLAG) $(INC) $(LIB) $(OBJ) -lft -lgnl -o $(NAME)
 
 %.o: %.c
 	@mkdir -p $(OBJ_PATH)
-	@gcc $(COMP_FLAG) $(INC) -o $@ -c $<
+	#@gcc $(COMP_FLAG) $(INC) -o $@ -c $<
+	@gcc $(INC) -o $@ -c $<
 	@mv $@ $(OBJ_PATH)
 
 clean:
