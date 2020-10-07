@@ -24,6 +24,10 @@ void			signal_handler(int sig)
 		write(STDOUT_FILENO, "\033[2D\033[J", 7);
 }
 
+/**
+** @param envp all available variables
+** @return the variable that matches with PATH, NULL on fail
+*/
 char		*get_paths(char **envp)
 {
 	while (*envp)
@@ -42,7 +46,6 @@ int main(int argc, char **argv, char **envp)
 
 	//signal(SIGINT, signal_handler);
 	signal(SIGQUIT, signal_handler);
-
 	while (1)
 	{
 		if (!get_cmd(&line))

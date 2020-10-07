@@ -11,9 +11,10 @@
 # include <printf.h>
 # include <unistd.h>
 # include <stdio.h>
+# include <stdlib.h>
 # include <sys/wait.h>
 # include <sys/stat.h>
-# include <stdlib.h>
+# include <signal.h>
 # define NONE		0
 # define SEMCOL		1
 # define PIPE		2
