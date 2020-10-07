@@ -24,19 +24,30 @@ void			signal_handler(int sig)
 		write(STDOUT_FILENO, "\033[2D\033[J", 7);
 }
 
-int main(void)
+char		*get_paths(char **envp)
+{
+	while (*envp)
+	{
+		if (!ft_strncmp(*envp, "PATH=", 5))
+			return (*envp);
+		envp++;
+	}
+	return (NULL);
+}
+
+int main(int argc, char **argv, char **envp)
 {
 	t_command	*cmd;
 	char 		*line = NULL;
 
 	//signal(SIGINT, signal_handler);
 	signal(SIGQUIT, signal_handler);
+
 	while (1)
 	{
 		if (!get_cmd(&line))
-			return (m_error(&line, UNDEFINED_ERR));
-		if (!init(&cmd, line))
-			return (m_error(&line, INIT_ERROR));
+			return (m_error(NULL, UNDEFINED_ERR));
+		init(&cmd, line, get_paths(envp));
 		//if (!ft_strncmp("exit", line, 4))
 		//	return (m_exit(&line));
 		//format_cmd(&line);

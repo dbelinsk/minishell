@@ -44,17 +44,20 @@ void	cmd_push_back(t_command **cmd, t_command cmd_item)
  ** TODO - PUSH BACK TO comandline struct chain
  ** Initializes the comandline struct chain
  */
-int		init(t_command **cmd, char *line)
+void		init(t_command **cmd, char *line, char *paths)
 {
 	t_command		tmp;
 
-	tmp.type = get_type();
-	tmp.path = get_path();
-	tmp.content = get_content();
-	tmp.flag = get_flag();
-	tmp.sep = get_sep();
-	tmp.exe = get_exe(tmp);
-
-	tmp.exe(tmp);
-	return (0);
+	if (!line || !cmd)
+		return ;
+	while (ft_strlen(line))
+	{
+		tmp.type = get_type(&line);
+		tmp.flag = get_flag(&line);
+		tmp.content = get_content(&line);
+		tmp.sep = get_sep(&line);
+		tmp.path = get_path(tmp.type, paths);
+		tmp.exe = get_exe(tmp.type);
+		tmp.exe(tmp);
+	}
 }
