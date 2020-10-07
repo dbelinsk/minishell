@@ -1,11 +1,13 @@
 #include "minishell.h"
 
 /**
- ** TODO - modify parameters to recive (char **line)
- ** TODO - trim *line from whitespaces
- ** TODO - get TYPE and leave line[0] on first printable character
- ** TODO - return TYPE on success, NULL on fail
- */
+** Functions cleans all spaces from the front of the string, stores x
+** characters until next space in the variable to be returned and moves
+** a pointer of parameter resived x positions;
+** @param line pointer to memory of the string
+** @return pointer to memory reservated string that represents a type
+**			NULL on fail
+*/
 char		*get_type(char **line)
 {
 	char		*ret;
@@ -28,11 +30,13 @@ char		*get_type(char **line)
 }
 
 /**
- ** TODO - modify parameters to recive (char **line)
- ** TODO - trim *line from whitespaces
- ** TODO - get CONTENT and leave line[0] on first printable character
- ** TODO - return CONTENT on success, NULL on fail
- */
+** Functions cleans all spaces from the front of the string, stores in the
+** variable to be returned x characters until \0 | or ; is found and moves
+** a pointer of parameter resived x positions;
+** @param line pointer to memory of the string
+** @return pointer to memory reservated string that represents a content
+**			NULL on fail
+*/
 char		*get_content(char **line)
 {
 		char		*ret;
@@ -55,11 +59,11 @@ char		*get_content(char **line)
 }
 
 /**
- ** TODO - modify parameters to recive (char **line)
- ** TODO - trim *line from whitespaces
- ** TODO - get FLAGS and leave line[0] on first printable character
- ** TODO - return 1 if FLAG found, 0 no FLAG, -1 on fail
- */
+** Functions cleans all spaces from the front of the string and moves
+** a pointer of parameter resived x positions;
+** @param line pointer to memory of the string
+** @return 1 if flag found, 0 if flag not found and -1 on fail
+*/
 int			get_flag(char **line)
 {
 	if (!*line)
@@ -75,12 +79,12 @@ int			get_flag(char **line)
 }
 
 /**
- ** TODO - modify parameters to recive (char **line)
- ** TODO - trim *line from whitespaces
- ** TODO - get SEPARATOR and leave line[0] on first printable character
- **			if exists
- ** TODO - return 2 on PIPE found, 1 on NEW CMD, 0 no SEP, -1 on fail
-  */
+** Functions cleans all spaces from the front of the string and moves
+** a pointer of parameter resived x positions;
+** @param line pointer to memory of the string
+** @return 2 if pipe separator found, 1 if comma separator found, 0 if
+** no separator found and -1 on fail
+*/
 int			get_sep(char **line)
 {
 	int		ret;
@@ -100,10 +104,12 @@ int			get_sep(char **line)
 }
 
 /**
- ** TODO - modify parameters to recive (char *type)
- ** TODO - get PATH based on recived type
- ** TODO - return PATH on success, NULL on fail
- */
+** Functions
+** @param type executable to find
+** @param line all pathes to executable available on mashine
+** @return pointer to memory reservated string that represents a full path
+**			of executable, NULL on fail
+*/
 char		*get_path(char *type, char *paths)
 {
 	char			**path_arr;

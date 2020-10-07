@@ -38,10 +38,10 @@ void	cmd_push_back(t_command **cmd, t_command cmd_item)
 }
 
 /** ---- MODIFY REQUIRED ---
- ** TODO - INFINITE LOOP UNTIL EOF or ERROR
- ** TODO - EACH GET FUNCTION HAS TO RECIVE &line ###
- ** TODO - GET THE VALUE OF &line and modify &line for next get call
+ ** TODO - LOOP UNTIL @param line length > 0
  ** TODO - PUSH BACK TO comandline struct chain
+ ** --- IMPORTANT ---
+ ** type, content, path are reservated in memory
  ** Initializes the comandline struct chain
  */
 void		init(t_command **cmd, char *line, char *paths)
