@@ -1,4 +1,5 @@
 #include "minishell.h"
+
 /*
 ** Creates new comandline struct item
 ** Return - pointer to item
