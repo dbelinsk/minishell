@@ -10,14 +10,13 @@ char	*backslash_remover(char *str)
 	i = 0;
 	j = 0;
 	len = ft_strlen(str);
-	ret = malloc(sizeof(char) * len);
+	ret = calloc(sizeof(*ret), len);
 	while (i < len)
 	{
 		if (*(str + i) == '\\')
 			i++;
 		*(ret + j++) = *(str + i++);
 	}
-	*(ret + j) = '\0';
 	free(str);
 	str = ft_strdup(ret);
 	free(ret);
@@ -33,7 +32,7 @@ char	*backslash_remover(char *str)
 */
 char		*get_type(char **line)
 {
-	char		*ret;
+	char		*ret, *tmp;
 	int			i;
 
 	if (!*line)
@@ -149,27 +148,30 @@ int			get_sep(char **line)
 char		*get_path(char *type, char *paths)
 {
 	char			**path_arr;
-	struct stat		fileStat;
+	struct stat		filestat;
 	char			*full_path;
 	char			*tmp;
-	char			*ret;
+	int				i;
 
 	paths += 5;
 	path_arr = ft_split(paths, ':');
-	ret = NULL;
-	while (*path_arr)
+	i = 0;
+	while (path_arr[i])
 	{
-		tmp = ft_strjoin(*path_arr, "/");
+		tmp = ft_strjoin(path_arr[i], "/");
 		full_path = ft_strjoin(tmp, type);
-		if (stat(full_path, &fileStat) == 0)
-			if (fileStat.st_size > 0 && !ret && ft_isalpha(*type))
-				ret = ft_strdup(full_path);
-		free(*path_arr);
 		free(tmp);
+		if (stat(full_path, &filestat) == 0)
+			if (filestat.st_size > 0 && ft_isalpha(*type))
+				break ;
+		free(path_arr[i++]);
 		free(full_path);
-		path_arr++;
+		full_path = NULL;
 	}
-	return (ret);
+	while (path_arr[i])
+		free(path_arr[i++]);
+	free(path_arr);
+	return (full_path);
 }
 
 /**
@@ -179,5 +181,12 @@ char		*get_path(char *type, char *paths)
  */
 void		*get_exe(char *type)
 {
-	return (&execute);
+	int		len;
+
+	len = ft_strlen(type);
+	if (!ft_strncmp(type, "exit", len))
+		return (&s_exit);
+	if (!ft_strncmp(type, "echo", len))
+		return (&s_echo);
+	return (NULL);
 }

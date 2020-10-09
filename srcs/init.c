@@ -1,5 +1,19 @@
 #include "minishell.h"
 
+void		clean_cmd(t_command **cmd)
+{
+	t_command		*tmp;
+
+	while (*cmd)
+	{
+		free((*cmd)->type);
+		free((*cmd)->content);
+		free((*cmd)->path);
+		tmp = (*cmd)->next;
+		free(*cmd);
+		*cmd = tmp;
+	}
+}
 /*
 ** Creates new comandline struct item
 ** Return - pointer to item
@@ -47,18 +61,18 @@ void	cmd_push_back(t_command **cmd, t_command cmd_item)
  */
 void		init(t_command **cmd, char *line, char *paths)
 {
-	t_command		tmp;
+	t_command		item;
 
-	if (!line || !cmd)
+	if (!line || !cmd || !ft_strlen(paths))
 		return ;
 	while (ft_strlen(line))
 	{
-		tmp.type = get_type(&line);
-		tmp.flag = get_flag(&line);
-		tmp.content = get_content(&line);
-		tmp.sep = get_sep(&line);
-		tmp.path = get_path(tmp.type, paths);
-		tmp.exe = get_exe(tmp.type);
-		tmp.exe(tmp);
+		item.type = get_type(&line);
+		item.flag = get_flag(&line);
+		item.content = get_content(&line);
+		item.sep = get_sep(&line);
+		item.path = get_path(item.type, paths);
+		item.exe = get_exe(item.type);
+		cmd_push_back(cmd, item);
 	}
 }
