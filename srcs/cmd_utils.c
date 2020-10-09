@@ -126,7 +126,7 @@ char		*get_path(char *type, char *paths)
 		tmp = ft_strjoin(*path_arr, "/");
 		full_path = ft_strjoin(tmp, type);
 		if (stat(full_path, &fileStat) == 0)
-			if (fileStat.st_size > 0 && !ret)
+			if (fileStat.st_size > 0 && !ret && ft_isalpha(*type))
 				ret = ft_strdup(full_path);
 		free(*path_arr);
 		free(tmp);
