@@ -1,5 +1,28 @@
 #include "minishell.h"
 
+char	*backslash_remover(char *str)
+{
+	int i;
+	int j;
+	int len;
+	char *ret;
+
+	i = 0;
+	j = 0;
+	len = ft_strlen(str);
+	ret = malloc(sizeof(char) * len);
+	while (i < len)
+	{
+		if (*(str + i) == '\\')
+			i++;
+		*(ret + j++) = *(str + i++);
+	}
+	*(ret + j) = '\0';
+	free(str);
+	str = ft_strdup(ret);
+	free(ret);
+	return(str);
+}
 /**
 ** Functions cleans all spaces from the front of the string, stores x
 ** characters until next space in the variable to be returned and moves
@@ -20,13 +43,17 @@ char		*get_type(char **line)
 	ret = ft_strdup(*line);
 	i = -1;
 	while (ret[++i])
-		if (ret[i] == ' ')
+	{
+		if (ret[i] == ' ' && ret[i - 1] != '\\')
 		{
 			ret[i] = 0;
 			break ;
 		}
+	}
 	*line += i;
-	return (ret);
+	if (ft_strchr(ret, '\\'))
+		return(backslash_remover(ret));
+	return(ret);
 }
 
 /**
@@ -49,13 +76,15 @@ char		*get_content(char **line)
 	ret = ft_strdup(*line);
 	i = -1;
 	while (ret[++i])
-		if (ret[i] == '|' || ret[i] == ';')
+		if ((ret[i] == '|' || ret[i] == ';') && ret[i - 1] != '\\')
 		{
 			ret[i] = 0;
 			break ;
 		}
 	*line += i;
-	return (ret);
+	if (ft_strchr(ret, '\\'))
+		return(backslash_remover(ret));
+	return(ret);
 }
 
 /**
@@ -66,16 +95,23 @@ char		*get_content(char **line)
 */
 int			get_flag(char **line)
 {
+	int i;
+
+	i = 0;
 	if (!*line)
 		return (-1);
 	while (**line && **line == ' ')
 		(*line)++;
-	if (!ft_strncmp(*line, "-n", 2))
-	{
-		(*line) += 2;
-		return (1);
-	}
-	return (NONE);
+	if (!ft_strncmp(*line, "-n ", 3))
+		i = 3;
+	else if (!ft_strncmp(*line, "\\-n ", 4) || !ft_strncmp(*line, "-\\n ", 4))
+		i = 4;
+	else if (!ft_strncmp(*line, "\\-\\n ", 5))
+		i = 5;
+	(*line) += i;
+	if (i > 0)
+		return(1);
+	return(i);
 }
 
 /**

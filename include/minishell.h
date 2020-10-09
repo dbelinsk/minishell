@@ -31,24 +31,23 @@ typedef struct 		s_command
 	struct s_command	*next;
 }					t_command;
 
-void	init(t_command **cmd, char *line, char *paths);
-int		execute(t_command cmd);
-
-int		get_cmd(char **line);
-int		m_exit(char **to_free);
-int		m_error(char **line, int n);
 void	put_promt();
-
-void	format_cmd(char **line);
-void	check_cmd(char **line);
 void	echo(char **line);
+void	*get_exe(char *type);
+void	check_cmd(char **line);
+void	format_cmd(char **line);
+void	init(t_command **cmd, char *line, char *paths);
 
-char		*get_type(char **line);
-char		*get_path(char *type, char *paths);
-char		*get_content(char **line);
-int			get_flag(char **line);
-int			get_sep(char **line);
-void		*get_exe(char *type);
+int		get_sep(char **line);
+int		get_cmd(char **line);
+int		get_flag(char **line);
+int		m_exit(char **to_free);
+int		execute(t_command cmd);
+int		m_error(char **line, int n);
 
+char	*get_type(char **line);
+char	*get_content(char **line);
+char	*backslash_remover(char *type);
+char	*get_path(char *type, char *paths);
 
 #endif
