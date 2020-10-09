@@ -46,16 +46,19 @@ int main(int argc, char **argv, char **envp)
 
 	//signal(SIGINT, signal_handler);
 	signal(SIGQUIT, signal_handler);
+	cmd = NULL;
 	while (1)
 	{
 		if (!get_cmd(&line))
 			return (m_error(NULL, UNDEFINED_ERR));
 		init(&cmd, line, get_paths(envp));
+		free(line);
+		if (!execute(&cmd))
+			break ;
 		//if (!ft_strncmp("exit", line, 4))
-		//	return (m_exit(&line));
+		//	return (m_exit(&line, &cmd));
 		//format_cmd(&line);
 		//check_cmd(&line);
-		free(line);
 		line = NULL;
 	}
 	return (0);

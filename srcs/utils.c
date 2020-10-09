@@ -36,9 +36,12 @@ int m_error(char** line, int n)
 	return(1);
 }
 
-int m_exit(char **to_free)
+int m_exit(char **to_free, t_command **cmd)
 {
 	free(*to_free);
+//	free((*cmd)->type);
+//	free((*cmd)->content);
+//	free((*cmd)->path);
 	*to_free = NULL;
 	return (0);
 }

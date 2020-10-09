@@ -19,7 +19,6 @@
 # define SEMCOL		1
 # define PIPE		2
 
-
 typedef struct 		s_command
 {
 	char				*type;
@@ -27,7 +26,7 @@ typedef struct 		s_command
 	char				*content;
 	int					flag;		// 0 o 1
 	int					sep;
-	void				(*exe)();
+	int					(*exe)();
 	struct s_command	*next;
 }					t_command;
 
@@ -41,13 +40,18 @@ void	init(t_command **cmd, char *line, char *paths);
 int		get_sep(char **line);
 int		get_cmd(char **line);
 int		get_flag(char **line);
-int		m_exit(char **to_free);
-int		execute(t_command cmd);
+int		m_exit(char **to_free, t_command **cmd);
+int		execute(t_command **cmd);
 int		m_error(char **line, int n);
 
 char	*get_type(char **line);
 char	*get_content(char **line);
 char	*backslash_remover(char *type);
 char	*get_path(char *type, char *paths);
+
+void		clean_cmd(t_command **cmd);
+int				s_exit(t_command **cmd);
+int				s_echo(t_command **cmd);
+
 
 #endif
