@@ -22,6 +22,7 @@ char	*backslash_remover(char *str)
 	free(ret);
 	return(str);
 }
+
 /**
 ** Functions cleans all spaces from the front of the string, stores x
 ** characters until next space in the variable to be returned and moves
@@ -43,7 +44,8 @@ char		*get_type(char **line)
 	i = -1;
 	while (ret[++i])
 	{
-		if (ret[i] == ' ' && ret[i - 1] != '\\')
+		if ((ret[i] == ' ' && ret[i - 1] != '\\')
+			|| is_sep("|;&", ret[i]))
 		{
 			ret[i] = 0;
 			break ;
@@ -65,7 +67,7 @@ char		*get_type(char **line)
 */
 char		*get_content(char **line)
 {
-		char		*ret;
+	char		*ret;
 	int			i;
 
 	if (!*line)
@@ -75,11 +77,13 @@ char		*get_content(char **line)
 	ret = ft_strdup(*line);
 	i = -1;
 	while (ret[++i])
-		if ((ret[i] == '|' || ret[i] == ';') && ret[i - 1] != '\\')
+	{
+		if (is_sep(";|&", ret[i]) && ret[i - 1] != '\\')
 		{
 			ret[i] = 0;
 			break ;
 		}
+	}
 	*line += i;
 	if (ft_strchr(ret, '\\'))
 		return(backslash_remover(ret));
@@ -133,6 +137,11 @@ int			get_sep(char **line)
 		ret = SEMCOL;
 	else if (!ft_strncmp(*line, "|", 1))
 		ret = PIPE;
+	else if (!ft_strncmp(*line, "&&", 2))
+	{
+		(*line)++;
+		ret = AND;
+	}
 	if(ret)
 		(*line)++;
 	return (ret);
@@ -188,5 +197,15 @@ void		*get_exe(char *type)
 		return (&s_exit);
 	if (!ft_strncmp(type, "echo", len))
 		return (&s_echo);
+	if (!ft_strncmp(type, "cd", len))
+		return (&s_cd);
+	if (!ft_strncmp(type, "pwd", len))
+		return (&s_pwd);
+	if (!ft_strncmp(type, "env", len))
+		return (&s_env);
+	if (!ft_strncmp(type, "export", len))
+		return (&s_export);
+	if (!ft_strncmp(type, "unset", len))
+		return (&s_unset);
 	return (NULL);
 }
