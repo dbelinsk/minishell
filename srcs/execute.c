@@ -13,12 +13,6 @@ int				s_echo(t_command **cmd)
 {
 	int		ret = 1;
 
-	printf("type = [%s]\n", (*cmd)->type);
-	printf("path = [%s]\n", (*cmd)->path);
-	printf("content = [%s]\n", (*cmd)->content);
-	printf("flag = [%d]\n", (*cmd)->flag);
-	printf("sep = [%d]\n", (*cmd)->sep);
-
 	ft_putstr_fd((*cmd)->content, 1);
 	if (!(*cmd)->flag)
 		ft_putchar_fd('\n', 1);
@@ -30,11 +24,11 @@ int				s_echo(t_command **cmd)
  */
 int				execute(t_command **cmd)
 {
-	/*printf("type = [%s]\n", (*cmd)->type);
+	printf("type = [%s]\n", (*cmd)->type);
 	printf("path = [%s]\n", (*cmd)->path);
 	printf("content = [%s]\n", (*cmd)->content);
 	printf("flag = [%d]\n", (*cmd)->flag);
-	printf("sep = [%d]\n", (*cmd)->sep);*/
+	printf("sep = [%d]\n", (*cmd)->sep);
 	if ((*cmd)->exe)
 		return (*cmd)->exe(cmd);
 	return (1);
