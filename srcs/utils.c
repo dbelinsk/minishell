@@ -18,8 +18,11 @@ void			put_promt()
 
 	dir = NULL;
 	dir = getcwd(dir, 0);
+	write(STDERR_FILENO, "\033[36m", 5);
 	write(STDOUT_FILENO, dir, strlen(dir));
+	write(STDERR_FILENO, "\033[34m", 5);
 	write(STDOUT_FILENO, "\n$ ", 3);
+	write(STDERR_FILENO, "\033[37m", 5);
 	free(dir);
 }
 

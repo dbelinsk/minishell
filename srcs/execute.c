@@ -1,14 +1,53 @@
 #include "minishell.h"
 
-int				s_exit(t_command **cmd, char **envp, int is_pipe )
+void			tmp_print_item(t_command *item)
 {
-	int		ret = 0;
+	printf("type = [%s]\n", item->type);
+	printf("path = [%s]\n", item->path);
+	printf("content = [%s]\n", item->content);
+	printf("flag = [%d]\n", item->flag);
+	printf("sep = [%d]\n", item->sep);
+	printf("err = [%d]\n", item->err);
+	if (item->prev)
+	{
+		printf("prev->type = [%s]\n", item->prev->type);
+		printf("prev->path = [%s]\n", item->prev->path);
+		printf("prev->content = [%s]\n", item->prev->content);
+		printf("prev->flag = [%d]\n", item->prev->flag);
+		printf("prev->sep = [%d]\n", item->prev->sep);
+		printf("prev->err = [%d]\n", item->prev->err);
+	}
 
-	if (is_pipe)
+}
+
+void			print_all_items(t_command *tmp)
+{
+	while (tmp)
+	{
+		if (tmp->prev)
+				printf("prev type = %s\n", tmp->prev->type);
+		else
+				printf("tmp->prev = NULL\n");
+
+		printf("tmp type = %s\n", tmp->type);
+		if (tmp->next)
+			printf("next type = %s\n", tmp->next->type);
+		else
+				printf("tmp->next = NULL\n");
+		printf("*******************\n");
+		tmp = tmp->next;
+	}
+}
+
+int				s_exit(t_command *cmd, char **envp)
+{
+	if (cmd->prev)
+		if (cmd->prev->sep == PIPE||
+			(cmd->prev->sep == AND && cmd->prev->err))
+			return (1);
+	if (cmd->sep == PIPE)
 		return (1);
-	if ((*cmd)->sep == PIPE)
-		ret = 1;
-	return (ret);
+	return (0);
 }
 
 int				s_echo(t_command *cmd, char **envp)
@@ -25,6 +64,9 @@ int				s_echo(t_command *cmd, char **envp)
 	args[i++] = (char*)0;
 	if ((child= fork()) == 0)
 	{
+		if (cmd->prev)
+			if (cmd->prev->err)
+				return (-1);
 		if (cmd->sep != PIPE)
 			execve (cmd->path, args, NULL);
 	}
@@ -39,7 +81,11 @@ int				s_cd(t_command *cmd, char **envp)
 {
 	DIR			*dir;
 	char		*path;
+	char		*tmp;
 
+	tmp = ft_strtrim(cmd->content, " ");
+	free(cmd->content);
+	cmd->content = tmp;
 	if (!ft_strlen(cmd->content))
 			path = ft_getenv(envp, "HOME");
 	else
@@ -47,11 +93,14 @@ int				s_cd(t_command *cmd, char **envp)
 	if (!(dir = opendir(path)))
 	{
 		m_error(cmd->type, cmd->content, DIR_ERROR);
-		return (1);
+		return (-1);
 	}
 	closedir(dir);
 	if (cmd->sep != PIPE)
 	{
+		if (cmd->prev)
+			if (cmd->prev->err)
+				return (-1);
 		if (!ft_strlen(cmd->content))
 			chdir(ft_getenv(envp, "HOME"));
 		else
@@ -69,6 +118,9 @@ int				s_pwd(t_command *cmd, char **envp)
 	args[1] = (char*)0;
 	if ((child= fork()) == 0)
 	{
+		if (cmd->prev)
+			if (cmd->prev->err)
+				return (-1);
 		if (cmd->sep != PIPE)
 			execve(cmd->path, args, NULL);
 	}
@@ -90,6 +142,9 @@ int				s_env(t_command *cmd, char **envp)
 	args[3] = (char*)0;
 	if ((child= fork()) == 0)
 	{
+		if (cmd->prev)
+			if (cmd->prev->err && cmd->prev->sep != PIPE)
+				return (-1);
 		if (cmd->sep != PIPE)
 			execve(args[0], args, envp);
 	}
@@ -119,30 +174,23 @@ int			s_unset(t_command *cmd, char **envp)
 int				execute(t_command **cmd, char **envp)
 {
 	int				ret;
-	int				is_pipe;
 	t_command		*aux;
 
-/*	printf("type = [%s]\n", (*cmd)->type);
-	printf("path = [%s]\n", (*cmd)->path);
-	printf("content = [%s]\n", (*cmd)->content);
-	printf("flag = [%d]\n", (*cmd)->flag);
-	printf("sep = [%d]\n", (*cmd)->sep);*/
+	//print_all_items(*cmd);
+	//tmp_print_item(*cmd);
 	ret = 1;
-	is_pipe = 0;
-	while ((*cmd))
+	aux = *cmd;
+	while (aux)
 	{
-		if ((*cmd)->sep == PIPE)
-			is_pipe = 1;
-		if ((*cmd)->sep == SEMCOL)
-			is_pipe = 0;
-		if ((*cmd)->exe || !ft_strncmp((*cmd)->type, "export", 6)
-						|| !ft_strncmp((*cmd)->type, "unset", 5))
-			ret = (*cmd)->exe(*cmd, envp, is_pipe);
+		if (aux->exe)
+		{
+			if ((ret = aux->exe(aux, envp)) < 0)
+				aux->err = 1;
+		}
 		else
-			m_error((*cmd)->type, NULL, COMMAND_ERR);
-		aux = (*cmd)->next;
-		clean_cmd(cmd);
-		*cmd = aux;
+			m_error(aux->type, NULL, COMMAND_ERR);
+		aux = aux->next;
 	}
+	clean_cmd(cmd);
 	return (ret);
 }
