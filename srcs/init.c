@@ -2,10 +2,17 @@
 
 void		clean_cmd(t_command **cmd)
 {
-	free((*cmd)->type);
-	free((*cmd)->content);
-	free((*cmd)->path);
-	free(*cmd);
+	t_command		*tmp;
+
+	while ((*cmd))
+	{
+		free((*cmd)->type);
+		free((*cmd)->content);
+		free((*cmd)->path);
+		tmp = (*cmd)->next;
+		free(*cmd);
+		*cmd = tmp;
+	}
 }
 /*
 ** Creates new comandline struct item
@@ -22,6 +29,7 @@ t_command	*new_cmd_item(t_command item_cmd)
 	cmd->content = item_cmd.content;
 	cmd->flag = item_cmd.flag;
 	cmd->sep = item_cmd.sep;
+	cmd->err = 0;
 	cmd->exe = item_cmd.exe;
 	cmd->next = NULL;
 	return (cmd);
@@ -37,12 +45,14 @@ void	cmd_push_back(t_command **cmd, t_command cmd_item)
 	if (!*cmd)
 	{
 		*cmd = new_cmd_item(cmd_item);
+		(*cmd)->prev = NULL;
 		return ;
 	}
 	tmp = *cmd;
 	while (tmp->next)
 		tmp = tmp->next;
 	tmp->next = new_cmd_item(cmd_item);
+	tmp->next->prev = tmp;
 }
 
 /** ---- MODIFY REQUIRED ---

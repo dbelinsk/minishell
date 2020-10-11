@@ -29,8 +29,10 @@ typedef struct 		s_command
 	char				*content;
 	int					flag;		// 0 o 1
 	int					sep;
+	int					err;
 	int					(*exe)();
 	struct s_command	*next;
+	struct s_command	*prev;
 }					t_command;
 
 void	put_promt();
@@ -53,7 +55,7 @@ char	*get_content(char **line, int *flag);
 char	*get_path(char *type, char *paths);
 
 void		clean_cmd(t_command **cmd);
-int			s_exit(t_command **cmd, char **envp, int is_pipe);
+int			s_exit(t_command *cmd, char **envp);
 int			s_echo(t_command *cmd, char **envp);
 int			s_cd(t_command *cmd, char **envp);
 int			s_pwd(t_command *cmd, char **envp);
