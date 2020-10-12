@@ -39,7 +39,7 @@ void			print_all_items(t_command *tmp)
 	}
 }
 
-int				s_exit(t_command *cmd, char **envp)
+int				s_exit(t_command *cmd)
 {
 	if (cmd->prev)
 		if (cmd->prev->sep == PIPE||
@@ -50,7 +50,7 @@ int				s_exit(t_command *cmd, char **envp)
 	return (0);
 }
 
-int				s_echo(t_command *cmd, char **envp)
+int				s_echo(t_command *cmd)
 {
 	pid_t	child;
 	char	*args[4];
@@ -77,7 +77,7 @@ int				s_echo(t_command *cmd, char **envp)
 	return (1);
 }
 
-int				s_cd(t_command *cmd, char **envp)
+int				s_cd(t_command *cmd)
 {
 	DIR			*dir;
 	char		*path;
@@ -87,7 +87,7 @@ int				s_cd(t_command *cmd, char **envp)
 	free(cmd->content);
 	cmd->content = tmp;
 	if (!ft_strlen(cmd->content))
-			path = ft_getenv(envp, "HOME");
+			path = ft_getenv("HOME");
 	else
 			path = cmd->content;
 	if (!(dir = opendir(path)))
@@ -101,15 +101,17 @@ int				s_cd(t_command *cmd, char **envp)
 		if (cmd->prev)
 			if (cmd->prev->err)
 				return (-1);
+		chdir(path);
+			/*
 		if (!ft_strlen(cmd->content))
-			chdir(ft_getenv(envp, "HOME"));
+			chdir(ft_getenv("HOME"));
 		else
-			chdir(cmd->content);
+			chdir(cmd->content);*/
 	}
 	return (1);
 }
 
-int				s_pwd(t_command *cmd, char **envp)
+int				s_pwd(t_command *cmd)
 {
 	pid_t	child;
 	char	*args[2];
@@ -131,10 +133,11 @@ int				s_pwd(t_command *cmd, char **envp)
 	return (1);
 }
 
-int				s_env(t_command *cmd, char **envp)
+int				s_env(t_command *cmd)
 {
-	pid_t	child;
-	char	*args[4];
+	extern char		**environ;
+	pid_t			child;
+	char			*args[4];
 
 	args[0] = "/bin/sh";
 	args[1] = "-c";
@@ -146,7 +149,7 @@ int				s_env(t_command *cmd, char **envp)
 			if (cmd->prev->err && cmd->prev->sep != PIPE)
 				return (-1);
 		if (cmd->sep != PIPE)
-			execve(args[0], args, envp);
+			execve(args[0], args, environ);
 	}
 	else if (child > 0)
 		wait(&child);
@@ -155,23 +158,32 @@ int				s_env(t_command *cmd, char **envp)
 	return (1);
 }
 
-int			s_export(t_command *cmd, char **envp)
+int			s_export(t_command *cmd)
 {
-	printf("hello from export\n");
+	char		*name;
+	char		*val;
+	int			eq;
+
+	if (!(val = ft_strchr(cmd->content, '=')))
+		return (1);
+	name = cmd->content;
+	eq = (int)(val - cmd->content);
+	name[eq] = 0;
+	val++;
+	ft_setenv(name, val, 1);
 	return (1);
 }
 
-int			s_unset(t_command *cmd, char **envp)
+int			s_unset(t_command *cmd)
 {
-	printf("hello from uset\n");
+	ft_unsetenv(cmd->content);
 	return (1);
 }
-
 
 /**
  ** HERE COMES TO DO LIST FOR MINISHELL
  */
-int				execute(t_command **cmd, char **envp)
+int				execute(t_command **cmd)
 {
 	int				ret;
 	t_command		*aux;
@@ -182,7 +194,7 @@ int				execute(t_command **cmd, char **envp)
 	{
 		if (aux->exe)
 		{
-			if ((ret = aux->exe(aux, envp)) < 0)
+			if ((ret = aux->exe(aux)) < 0)
 				aux->err = 1;
 		}
 		else

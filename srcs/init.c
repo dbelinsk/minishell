@@ -62,14 +62,14 @@ void	cmd_push_back(t_command **cmd, t_command cmd_item)
  ** type, content, path are reservated in memory
  ** Initializes the comandline struct chain
  */
-void		init(t_command **cmd, char *line, char **envp)
+void		init(t_command **cmd, char *line)
 {
 	t_command		item;
 	char			*paths;
 
 	if (!line || !cmd)
 		return ;
-	paths = ft_getenv(envp, "PATH");
+	paths = ft_getenv("PATH");
 	while (ft_strlen(line))
 	{
 		item.type = get_type(&line);
