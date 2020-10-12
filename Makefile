@@ -23,11 +23,11 @@ all: $(NAME)
 
 $(NAME): $(OBJS)
 	@printf "libft..."
-	#@make -C $(LIB_PATH)libft > /dev/null 2>&1
+	@make -C $(LIB_PATH)libft > /dev/null 2>&1
 	@printf "done\ngnl..."
-	#@make -C $(LIB_PATH)gnl > /dev/null 2>&1
+	@make -C $(LIB_PATH)gnl > /dev/null 2>&1
 	@printf "done\nminishell..."
-	#@gcc $(COMP_FLAG) $(INC) $(LIB) $(OBJ) -lft -lgnl -o $(NAME)
+	@gcc $(COMP_FLAG) $(INC) $(LIB) $(OBJ) -lft -lgnl -o $(NAME)
 	@gcc $(INC) $(LIB) $(OBJ) -lft -lgnl -o $(NAME)
 	@echo done
 
@@ -45,8 +45,8 @@ clean:
 	@rm -rf $(OBJ_PATH) > /dev/null 2>&1
 
 fclean: clean
-	#@make -C $(LIB_PATH)libft fclean
-	#@make -C $(LIB_PATH)gnl fclean
+	@make -C $(LIB_PATH)libft fclean
+	@make -C $(LIB_PATH)gnl fclean
 	@rm -fv $(NAME) > /dev/null 2>&1
 
 re: fclean all

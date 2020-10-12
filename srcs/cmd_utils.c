@@ -1,26 +1,48 @@
 #include "minishell.h"
 
-char	*backslash_remover(char *str)
+void	backslash_remover(char **line, char **ret, int *i, int *j)
 {
-	int i;
-	int j;
-	int len;
-	char *ret;
+	(*i)++;
+	*(*ret + (*j)++) = *(*line + (*i)++);
+}
 
-	i = 0;
-	j = 0;
-	len = ft_strlen(str);
-	ret = calloc(sizeof(*ret), len);
-	while (i < len)
+void 	quapo_remover(char **line, char **ret, int *i, int *j)
+{
+	char	quapo;
+	int		quapo_found;
+
+	quapo = *(*line + *i);
+	(*i)++;
+	quapo_found = 0;
+	while (*(line + *i) && quapo_found < 1)
 	{
-		if (*(str + i) == '\\')
-			i++;
-		*(ret + j++) = *(str + i++);
+		if (*(*line + *i) == '\\')
+			backslash_remover(line, ret, i, j);
+		else if (*(*line + *i) == quapo)
+		{
+			quapo_found = 1;
+			(*i)++;
+		}
+		else
+			*(*ret + (*j)++) = *(*line + (*i)++);
 	}
-	free(str);
-	str = ft_strdup(ret);
-	free(ret);
-	return(str);
+	if (quapo_found == 0)
+		ft_printf("error, amigo.");
+}
+
+int		flag_checker(char **ret)
+{
+	char *aux;
+
+	if (!ft_strncmp(*ret, "-n ", 3))
+	{
+		aux = ft_strdup(*ret + 3);
+		//free(*ret);
+		*ret = aux;
+		//free(aux);
+		return 1;
+	}
+	return 0;
 }
 
 /**
@@ -33,17 +55,26 @@ char	*backslash_remover(char *str)
 */
 char		*get_type(char **line)
 {
-	char		*ret, *tmp;
-	int			i;
+	int i;
+	int j;
+	char *ret;
 
 	if (!*line)
-		return (NULL);
-	while (**line && **line == ' ')
-		(*line)++;
-	ret = ft_strdup(*line);
-	i = -1;
-	while (ret[++i])
+		return(NULL);
+	i = 0;
+	while(*(*line + i) && *(*line + i) == ' ')
+		i++;
+	ret = ft_calloc(ft_strlen(*line + i), sizeof(char));
+	j = 0;
+	while (*(*line + i) && *(*line + i) != ' ')
 	{
+
+		if (*(*line + i) == '\\')
+			backslash_remover(line, &ret, &i, &j);
+		else if (*(*line + i) == '\'' || *(*line + i) == '\"')
+			quapo_remover(line, &ret, &i, &j);
+		else
+			*(ret + j++) = *(*line + i++);
 		if ((ret[i] == ' ' && ret[i - 1] != '\\')
 			|| is_sep("|;&", ret[i]))
 		{
@@ -52,12 +83,10 @@ char		*get_type(char **line)
 		}
 	}
 	*line += i;
-	if (ft_strchr(ret, '\\'))
-		return(backslash_remover(ret));
 	return(ret);
 }
 
-/**
+/*
 ** Functions cleans all spaces from the front of the string, stores in the
 ** variable to be returned x characters until \0 | or ; is found and moves
 ** a pointer of parameter resived x positions;
@@ -65,19 +94,29 @@ char		*get_type(char **line)
 ** @return pointer to memory reservated string that represents a content
 **			NULL on fail
 */
-char		*get_content(char **line)
+char		*get_content(char **line, int *flag)
 {
-	char		*ret;
-	int			i;
+	int i;
+	int j;
+	char *ret;
 
 	if (!*line)
-		return (NULL);
-	while (**line && **line == ' ')
-		(*line)++;
-	ret = ft_strdup(*line);
-	i = -1;
-	while (ret[++i])
+		return(NULL);
+	i = 0;
+	while(*(*line + i) && *(*line + i) == ' ')
+		i++;
+	ret = ft_calloc(ft_strlen(*line + i), sizeof(char));
+	j = 0;
+	while (*(*line + i) && (*(*line + i) != '|' || *(*line + i) != ';'))
 	{
+		if (*(*line + i) == '\\')
+			backslash_remover(line, &ret, &i, &j);
+		else if (*(*line + i) == '\'' || *(*line + i) == '\"')
+			quapo_remover(line, &ret, &i, &j);
+		else if (*(*line + i) == ' ' && *(*line + i + 1) == ' ')
+			i++;
+		else
+			*(ret + j++) = *(*line + i++);
 		if (is_sep(";|&", ret[i]) && ret[i - 1] != '\\')
 		{
 			ret[i] = 0;
@@ -85,8 +124,7 @@ char		*get_content(char **line)
 		}
 	}
 	*line += i;
-	if (ft_strchr(ret, '\\'))
-		return(backslash_remover(ret));
+	*flag = flag_checker(&ret);
 	return(ret);
 }
 
@@ -115,9 +153,9 @@ int			get_flag(char **line)
 	if (i > 0)
 		return(1);
 	return(i);
-}
+}*/
 
-/**
+/**ech
 ** Functions cleans all spaces from the front of the string and moves
 ** a pointer of parameter resived x positions;
 ** @param line pointer to memory of the string

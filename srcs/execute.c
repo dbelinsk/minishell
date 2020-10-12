@@ -28,7 +28,6 @@ void			print_all_items(t_command *tmp)
 				printf("prev type = %s\n", tmp->prev->type);
 		else
 				printf("tmp->prev = NULL\n");
-
 		printf("tmp type = %s\n", tmp->type);
 		if (tmp->next)
 			printf("next type = %s\n", tmp->next->type);
