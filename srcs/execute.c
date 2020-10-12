@@ -17,6 +17,15 @@ void			tmp_print_item(t_command *item)
 		printf("prev->sep = [%d]\n", item->prev->sep);
 		printf("prev->err = [%d]\n", item->prev->err);
 	}
+	if (item->next)
+	{
+		printf("next->type = [%s]\n", item->next->type);
+		printf("next->path = [%s]\n", item->next->path);
+		printf("next->content = [%s]\n", item->next->content);
+		printf("next->flag = [%d]\n", item->next->flag);
+		printf("next->sep = [%d]\n", item->next->sep);
+		printf("next->err = [%d]\n", item->next->err);
+	}
 
 }
 
@@ -55,6 +64,7 @@ int				s_echo(t_command *cmd)
 	char	*args[4];
 	int		i;
 
+	tmp_print_item(cmd);
 	i = 0;
 	args[i++] = cmd->type;
 	if (cmd->flag)
@@ -186,8 +196,6 @@ int				execute(t_command **cmd)
 	aux = *cmd;
 	while (aux)
 	{
-			tmp_print_item(aux);
-
 		if (aux->exe)
 		{
 			if ((ret = aux->exe(aux)) < 0)
