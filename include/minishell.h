@@ -73,5 +73,4 @@ void	backslash_remover(char **line, char **ret, int *i, int *j);
 void 	quapo_remover(char **line, char **ret, int *i, int *j);
 int		flag_checker(char **ret);
 
-
 #endif
