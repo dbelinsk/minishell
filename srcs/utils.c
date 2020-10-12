@@ -26,20 +26,6 @@ void			put_promt()
 	free(dir);
 }
 
-char		*ft_getenv(char **envp, char *var)
-{
-	int			len;
-
-	len = ft_strlen(var);
-	while (*envp)
-	{
-		if (!ft_strncmp(*envp, var, len))
-			return (*envp + len + 1);
-		envp++;
-	}
-	return (NULL);
-}
-
 int			is_sep(char *s, char c)
 {
 	while (*s)
