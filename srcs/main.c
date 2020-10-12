@@ -24,21 +24,6 @@ void			signal_handler(int sig)
 		write(STDOUT_FILENO, "\033[2D\033[J", 7);
 }
 
-/**
-** @param envp all available variables
-** @return the variable that matches with PATH, NULL on fail
-*/
-char		*get_paths(char **envp)
-{
-	while (*envp)
-	{
-		if (!ft_strncmp(*envp, "PATH=", 5))
-			return (*envp);
-		envp++;
-	}
-	return (NULL);
-}
-
 int main(int argc, char **argv, char **envp)
 {
 	t_command	*cmd;
@@ -50,15 +35,11 @@ int main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		if (!get_cmd(&line))
-			return (m_error(NULL, UNDEFINED_ERR));
-		init(&cmd, line, get_paths(envp));
+			return (m_error(NULL, NULL, UNDEFINED_ERR));
+		init(&cmd, line, envp);
 		free(line);
-		if (!execute(&cmd))
+		if (!execute(&cmd, envp))
 			break ;
-		//if (!ft_strncmp("exit", line, 4))
-		//	return (m_exit(&line, &cmd));
-		//format_cmd(&line);
-		//check_cmd(&line);
 		line = NULL;
 	}
 	return (0);

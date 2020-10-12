@@ -4,7 +4,7 @@ void		clean_cmd(t_command **cmd)
 {
 	t_command		*tmp;
 
-	while (*cmd)
+	while ((*cmd))
 	{
 		free((*cmd)->type);
 		free((*cmd)->content);
@@ -29,6 +29,7 @@ t_command	*new_cmd_item(t_command item_cmd)
 	cmd->content = item_cmd.content;
 	cmd->flag = item_cmd.flag;
 	cmd->sep = item_cmd.sep;
+	cmd->err = 0;
 	cmd->exe = item_cmd.exe;
 	cmd->next = NULL;
 	return (cmd);
@@ -44,12 +45,14 @@ void	cmd_push_back(t_command **cmd, t_command cmd_item)
 	if (!*cmd)
 	{
 		*cmd = new_cmd_item(cmd_item);
+		(*cmd)->prev = NULL;
 		return ;
 	}
 	tmp = *cmd;
 	while (tmp->next)
 		tmp = tmp->next;
 	tmp->next = new_cmd_item(cmd_item);
+	tmp->next->prev = tmp;
 }
 
 /** ---- MODIFY REQUIRED ---
@@ -59,12 +62,14 @@ void	cmd_push_back(t_command **cmd, t_command cmd_item)
  ** type, content, path are reservated in memory
  ** Initializes the comandline struct chain
  */
-void		init(t_command **cmd, char *line, char *paths)
+void		init(t_command **cmd, char *line, char **envp)
 {
 	t_command		item;
+	char			*paths;
 
-	if (!line || !cmd || !ft_strlen(paths))
+	if (!line || !cmd)
 		return ;
+	paths = ft_getenv(envp, "PATH");
 	while (ft_strlen(line))
 	{
 		item.type = get_type(&line);

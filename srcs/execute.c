@@ -1,35 +1,195 @@
 #include "minishell.h"
 
-int				s_exit(t_command **cmd)
+void			tmp_print_item(t_command *item)
 {
-	int		ret = 0;
-	if ((*cmd)->sep == PIPE)
-		ret = 1;
-	clean_cmd(cmd);
-	return (ret);
+	printf("type = [%s]\n", item->type);
+	printf("path = [%s]\n", item->path);
+	printf("content = [%s]\n", item->content);
+	printf("flag = [%d]\n", item->flag);
+	printf("sep = [%d]\n", item->sep);
+	printf("err = [%d]\n", item->err);
+	if (item->prev)
+	{
+		printf("prev->type = [%s]\n", item->prev->type);
+		printf("prev->path = [%s]\n", item->prev->path);
+		printf("prev->content = [%s]\n", item->prev->content);
+		printf("prev->flag = [%d]\n", item->prev->flag);
+		printf("prev->sep = [%d]\n", item->prev->sep);
+		printf("prev->err = [%d]\n", item->prev->err);
+	}
+
 }
 
-int				s_echo(t_command **cmd)
+void			print_all_items(t_command *tmp)
 {
-	int		ret = 1;
-
-	ft_putstr_fd((*cmd)->content, 1);
-	if (!(*cmd)->flag)
-		ft_putchar_fd('\n', 1);
-	clean_cmd(cmd);
-	return (ret);
+	while (tmp)
+	{
+		if (tmp->prev)
+				printf("prev type = %s\n", tmp->prev->type);
+		else
+				printf("tmp->prev = NULL\n");
+		printf("tmp type = %s\n", tmp->type);
+		if (tmp->next)
+			printf("next type = %s\n", tmp->next->type);
+		else
+				printf("tmp->next = NULL\n");
+		printf("*******************\n");
+		tmp = tmp->next;
+	}
 }
+
+int				s_exit(t_command *cmd, char **envp)
+{
+	if (cmd->prev)
+		if (cmd->prev->sep == PIPE||
+			(cmd->prev->sep == AND && cmd->prev->err))
+			return (1);
+	if (cmd->sep == PIPE)
+		return (1);
+	return (0);
+}
+
+int				s_echo(t_command *cmd, char **envp)
+{
+	pid_t	child;
+	char	*args[4];
+	int		i;
+
+	i = 0;
+	args[i++] = cmd->type;
+	if (cmd->flag)
+		args[i++] = "-n";
+	args[i++] = cmd->content;
+	args[i++] = (char*)0;
+	if ((child= fork()) == 0)
+	{
+		if (cmd->prev)
+			if (cmd->prev->err)
+				return (-1);
+		if (cmd->sep != PIPE)
+			execve (cmd->path, args, NULL);
+	}
+	else if (child > 0)
+		wait(&child);
+	else
+		return (0);
+	return (1);
+}
+
+int				s_cd(t_command *cmd, char **envp)
+{
+	DIR			*dir;
+	char		*path;
+	char		*tmp;
+
+	tmp = ft_strtrim(cmd->content, " ");
+	free(cmd->content);
+	cmd->content = tmp;
+	if (!ft_strlen(cmd->content))
+			path = ft_getenv(envp, "HOME");
+	else
+			path = cmd->content;
+	if (!(dir = opendir(path)))
+	{
+		m_error(cmd->type, cmd->content, DIR_ERROR);
+		return (-1);
+	}
+	closedir(dir);
+	if (cmd->sep != PIPE)
+	{
+		if (cmd->prev)
+			if (cmd->prev->err)
+				return (-1);
+		if (!ft_strlen(cmd->content))
+			chdir(ft_getenv(envp, "HOME"));
+		else
+			chdir(cmd->content);
+	}
+	return (1);
+}
+
+int				s_pwd(t_command *cmd, char **envp)
+{
+	pid_t	child;
+	char	*args[2];
+
+	args[0] = cmd->type;
+	args[1] = (char*)0;
+	if ((child= fork()) == 0)
+	{
+		if (cmd->prev)
+			if (cmd->prev->err)
+				return (-1);
+		if (cmd->sep != PIPE)
+			execve(cmd->path, args, NULL);
+	}
+	else if (child > 0)
+		wait(&child);
+	else
+		return (0);
+	return (1);
+}
+
+int				s_env(t_command *cmd, char **envp)
+{
+	pid_t	child;
+	char	*args[4];
+
+	args[0] = "/bin/sh";
+	args[1] = "-c";
+	args[2] = "env";
+	args[3] = (char*)0;
+	if ((child= fork()) == 0)
+	{
+		if (cmd->prev)
+			if (cmd->prev->err && cmd->prev->sep != PIPE)
+				return (-1);
+		if (cmd->sep != PIPE)
+			execve(args[0], args, envp);
+	}
+	else if (child > 0)
+		wait(&child);
+	else
+		return (0);
+	return (1);
+}
+
+int			s_export(t_command *cmd, char **envp)
+{
+	printf("hello from export\n");
+	return (1);
+}
+
+int			s_unset(t_command *cmd, char **envp)
+{
+	printf("hello from uset\n");
+	return (1);
+}
+
+
 /**
  ** HERE COMES TO DO LIST FOR MINISHELL
  */
-int				execute(t_command **cmd)
+int				execute(t_command **cmd, char **envp)
 {
-	printf("type = [%s]\n", (*cmd)->type);
-	printf("path = [%s]\n", (*cmd)->path);
-	printf("content = [%s]\n", (*cmd)->content);
-	printf("flag = [%d]\n", (*cmd)->flag);
-	printf("sep = [%d]\n", (*cmd)->sep);
-	if ((*cmd)->exe)
-		return (*cmd)->exe(cmd);
-	return (1);
+	int				ret;
+	t_command		*aux;
+
+	//print_all_items(*cmd);
+	//tmp_print_item(*cmd);
+	ret = 1;
+	aux = *cmd;
+	while (aux)
+	{
+		if (aux->exe)
+		{
+			if ((ret = aux->exe(aux, envp)) < 0)
+				aux->err = 1;
+		}
+		else
+			m_error(aux->type, NULL, COMMAND_ERR);
+		aux = aux->next;
+	}
+	clean_cmd(cmd);
+	return (ret);
 }
