@@ -28,7 +28,6 @@ void			print_all_items(t_command *tmp)
 				printf("prev type = %s\n", tmp->prev->type);
 		else
 				printf("tmp->prev = NULL\n");
-
 		printf("tmp type = %s\n", tmp->type);
 		if (tmp->next)
 			printf("next type = %s\n", tmp->next->type);
@@ -42,7 +41,7 @@ void			print_all_items(t_command *tmp)
 int				s_exit(t_command *cmd)
 {
 	if (cmd->prev)
-		if (cmd->prev->sep == PIPE||
+		if (cmd->prev->sep == PIPE ||
 			(cmd->prev->sep == AND && cmd->prev->err))
 			return (1);
 	if (cmd->sep == PIPE)
@@ -102,11 +101,6 @@ int				s_cd(t_command *cmd)
 			if (cmd->prev->err)
 				return (-1);
 		chdir(path);
-			/*
-		if (!ft_strlen(cmd->content))
-			chdir(ft_getenv("HOME"));
-		else
-			chdir(cmd->content);*/
 	}
 	return (1);
 }

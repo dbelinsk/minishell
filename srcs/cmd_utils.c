@@ -68,6 +68,7 @@ char		*get_type(char **line)
 	j = 0;
 	while (*(*line + i) && *(*line + i) != ' ')
 	{
+
 		if (*(*line + i) == '\\')
 			backslash_remover(line, &ret, &i, &j);
 		else if (*(*line + i) == '\'' || *(*line + i) == '\"')
@@ -80,7 +81,6 @@ char		*get_type(char **line)
 			ret[i] = 0;
 			break ;
 		}
-
 	}
 	*line += i;
 	return(ret);
@@ -117,6 +117,11 @@ char		*get_content(char **line, int *flag)
 			i++;
 		else
 			*(ret + j++) = *(*line + i++);
+		if (is_sep(";|&", ret[i]) && ret[i - 1] != '\\')
+		{
+			ret[i] = 0;
+			break ;
+		}
 	}
 	i = -1;
 	while (ret[++i])
@@ -137,7 +142,7 @@ char		*get_content(char **line, int *flag)
 ** a pointer of parameter resived x positions;
 ** @param line pointer to memory of the string
 ** @return 1 if flag found, 0 if flag not found and -1 on fail
-
+*/
 int			get_flag(char **line)
 {
 	int i;
