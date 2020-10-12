@@ -5,6 +5,7 @@
 # define MALLOC_ERR 1
 # define UNDEFINED_ERR 2
 # define INIT_ERROR 3
+# define DIR_ERROR 4
 
 # include <get_next_line.h>
 # include <libft.h>
@@ -15,9 +16,11 @@
 # include <sys/wait.h>
 # include <sys/stat.h>
 # include <signal.h>
+# include <dirent.h>
 # define NONE		0
 # define SEMCOL		1
 # define PIPE		2
+# define AND		3
 
 typedef struct 		s_command
 {
@@ -35,21 +38,30 @@ void	echo(char **line);
 void	*get_exe(char *type);
 void	check_cmd(char **line);
 void	format_cmd(char **line);
-void	init(t_command **cmd, char *line, char *paths);
+void	init(t_command **cmd, char *line, char **envp);
 
 int		get_sep(char **line);
 int		get_cmd(char **line);
 int		m_exit(char **to_free, t_command **cmd);
-int		execute(t_command **cmd);
-int		m_error(char **line, int n);
+int		execute(t_command **cmd, char **envp);
+int		m_error(char *type, char *content, int n);
+char	*ft_getenv(char **envp, char *var);
+int		is_sep(char *s, char c);
 
 char	*get_type(char **line);
 char	*get_content(char **line, int *flag);
 char	*get_path(char *type, char *paths);
 
 void		clean_cmd(t_command **cmd);
-int				s_exit(t_command **cmd);
-int				s_echo(t_command **cmd);
+int			s_exit(t_command **cmd, char **envp, int is_pipe);
+int			s_echo(t_command *cmd, char **envp);
+int			s_cd(t_command *cmd, char **envp);
+int			s_pwd(t_command *cmd, char **envp);
+int			s_env(t_command *cmd, char **envp);
+int			s_export(t_command *cmd, char **envp);
+int			s_unset(t_command *cmd, char **envp);
+
+
 
 
 #endif

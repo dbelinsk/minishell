@@ -74,6 +74,17 @@ char		*get_type(char **line)
 			quapo_remover(line, &ret, &i, &j);
 		else
 			*(ret + j++) = *(*line + i++);
+		if (ret[i] == ' ' && ret[i - 1] != '\\')
+		{
+			ret[i] = 0;
+			break ;
+		}
+		if ((ret[i] == ' ' && ret[i - 1] != '\\')
+			|| is_sep("|;&", ret[i]))
+		{
+			ret[i] = 0;
+			break ;
+		}
 	}
 	*line += i;
 	return(ret);
@@ -110,6 +121,15 @@ char		*get_content(char **line, int *flag)
 			i++;
 		else
 			*(ret + j++) = *(*line + i++);
+	}
+	i = -1;
+	while (ret[++i])
+	{
+		if (is_sep(";|&", ret[i]) && ret[i - 1] != '\\')
+		{
+			ret[i] = 0;
+			break ;
+		}
 	}
 	*line += i;
 	*flag = flag_checker(&ret);
@@ -163,6 +183,11 @@ int			get_sep(char **line)
 		ret = SEMCOL;
 	else if (!ft_strncmp(*line, "|", 1))
 		ret = PIPE;
+	else if (!ft_strncmp(*line, "&&", 2))
+	{
+		(*line)++;
+		ret = AND;
+	}
 	if(ret)
 		(*line)++;
 	return (ret);
@@ -218,5 +243,15 @@ void		*get_exe(char *type)
 		return (&s_exit);
 	if (!ft_strncmp(type, "echo", len))
 		return (&s_echo);
+	if (!ft_strncmp(type, "cd", len))
+		return (&s_cd);
+	if (!ft_strncmp(type, "pwd", len))
+		return (&s_pwd);
+	if (!ft_strncmp(type, "env", len))
+		return (&s_env);
+	if (!ft_strncmp(type, "export", len))
+		return (&s_export);
+	if (!ft_strncmp(type, "unset", len))
+		return (&s_unset);
 	return (NULL);
 }
