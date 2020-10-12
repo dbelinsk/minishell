@@ -24,7 +24,7 @@ void			signal_handler(int sig)
 		write(STDOUT_FILENO, "\033[2D\033[J", 7);
 }
 
-int main(int argc, char **argv, char **envp)
+int main(int argc, char **argv)
 {
 	t_command	*cmd;
 	char 		*line = NULL;
@@ -36,9 +36,9 @@ int main(int argc, char **argv, char **envp)
 	{
 		if (!get_cmd(&line))
 			return (m_error(NULL, NULL, UNDEFINED_ERR));
-		init(&cmd, line, envp);
+		init(&cmd, line);
 		free(line);
-		if (!execute(&cmd, envp))
+		if (!execute(&cmd))
 			break ;
 		line = NULL;
 	}

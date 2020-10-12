@@ -17,6 +17,7 @@
 # include <sys/stat.h>
 # include <signal.h>
 # include <dirent.h>
+# include <errno.h>
 # define NONE		0
 # define SEMCOL		1
 # define PIPE		2
@@ -40,14 +41,18 @@ void	echo(char **line);
 void	*get_exe(char *type);
 void	check_cmd(char **line);
 void	format_cmd(char **line);
-void	init(t_command **cmd, char *line, char **envp);
+void	init(t_command **cmd, char *line);
 
 int		get_sep(char **line);
 int		get_cmd(char **line);
 int		m_exit(char **to_free, t_command **cmd);
-int		execute(t_command **cmd, char **envp);
+int		execute(t_command **cmd);
 int		m_error(char *type, char *content, int n);
-char	*ft_getenv(char **envp, char *var);
+char	*ft_getenv(const char *var);
+int		ft_setenv(const char *name, const char *value, int overwrite);
+int		ft_unsetenv(const char *name);
+
+
 int		is_sep(char *s, char c);
 
 char	*get_type(char **line);
@@ -59,12 +64,12 @@ void	backslash_remover(char **line, char **ret, int *i, int *j);
 void 	quapo_remover(char **line, char **ret, int *i, int *j);
 int		flag_checker(char **ret);
 
-int			s_exit(t_command *cmd, char **envp);
-int			s_echo(t_command *cmd, char **envp);
-int			s_cd(t_command *cmd, char **envp);
-int			s_pwd(t_command *cmd, char **envp);
-int			s_env(t_command *cmd, char **envp);
-int			s_export(t_command *cmd, char **envp);
-int			s_unset(t_command *cmd, char **envp);
+int			s_exit(t_command *cmd);
+int			s_echo(t_command *cmd);
+int			s_cd(t_command *cmd);
+int			s_pwd(t_command *cmd);
+int			s_env(t_command *cmd);
+int			s_export(t_command *cmd);
+int			s_unset(t_command *cmd);
 
 #endif
