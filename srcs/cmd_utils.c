@@ -74,17 +74,13 @@ char		*get_type(char **line)
 			quapo_remover(line, &ret, &i, &j);
 		else
 			*(ret + j++) = *(*line + i++);
-		if (ret[i] == ' ' && ret[i - 1] != '\\')
-		{
-			ret[i] = 0;
-			break ;
-		}
 		if ((ret[i] == ' ' && ret[i - 1] != '\\')
 			|| is_sep("|;&", ret[i]))
 		{
 			ret[i] = 0;
 			break ;
 		}
+
 	}
 	*line += i;
 	return(ret);
