@@ -14,7 +14,7 @@ void 	quapo_remover(char **line, char **ret, int *i, int *j)
 	quapo = *(*line + *i);
 	(*i)++;
 	quapo_found = 0;
-	while (*(line + *i) && quapo_found < 1)
+	while (*(*line + *i) && quapo_found < 1)
 	{
 		if (*(*line + *i) == '\\')
 			backslash_remover(line, ret, i, j);
