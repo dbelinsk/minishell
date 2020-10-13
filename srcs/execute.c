@@ -17,6 +17,15 @@ void			tmp_print_item(t_command *item)
 		printf("prev->sep = [%d]\n", item->prev->sep);
 		printf("prev->err = [%d]\n", item->prev->err);
 	}
+	if (item->next)
+	{
+		printf("next->type = [%s]\n", item->next->type);
+		printf("next->path = [%s]\n", item->next->path);
+		printf("next->content = [%s]\n", item->next->content);
+		printf("next->flag = [%d]\n", item->next->flag);
+		printf("next->sep = [%d]\n", item->next->sep);
+		printf("next->err = [%d]\n", item->next->err);
+	}
 
 }
 
@@ -41,7 +50,7 @@ void			print_all_items(t_command *tmp)
 int				s_exit(t_command *cmd)
 {
 	if (cmd->prev)
-		if (cmd->prev->sep == PIPE||
+		if (cmd->prev->sep == PIPE ||
 			(cmd->prev->sep == AND && cmd->prev->err))
 			return (1);
 	if (cmd->sep == PIPE)
@@ -55,6 +64,7 @@ int				s_echo(t_command *cmd)
 	char	*args[4];
 	int		i;
 
+	tmp_print_item(cmd);
 	i = 0;
 	args[i++] = cmd->type;
 	if (cmd->flag)
@@ -101,11 +111,6 @@ int				s_cd(t_command *cmd)
 			if (cmd->prev->err)
 				return (-1);
 		chdir(path);
-			/*
-		if (!ft_strlen(cmd->content))
-			chdir(ft_getenv("HOME"));
-		else
-			chdir(cmd->content);*/
 	}
 	return (1);
 }

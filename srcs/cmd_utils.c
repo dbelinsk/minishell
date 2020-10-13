@@ -14,7 +14,7 @@ void 	quapo_remover(char **line, char **ret, int *i, int *j)
 	quapo = *(*line + *i);
 	(*i)++;
 	quapo_found = 0;
-	while (*(line + *i) && quapo_found < 1)
+	while (*(*line + *i) && quapo_found < 1)
 	{
 		if (*(*line + *i) == '\\')
 			backslash_remover(line, ret, i, j);
@@ -75,12 +75,12 @@ char		*get_type(char **line)
 			quapo_remover(line, &ret, &i, &j);
 		else
 			*(ret + j++) = *(*line + i++);
-		if ((ret[i] == ' ' && ret[i - 1] != '\\')
+		/*if ((ret[i] == ' ' && ret[i - 1] != '\\')
 			|| is_sep("|;&", ret[i]))
 		{
 			ret[i] = 0;
 			break ;
-		}
+		}*/
 	}
 	*line += i;
 	return(ret);
@@ -117,12 +117,21 @@ char		*get_content(char **line, int *flag)
 			i++;
 		else
 			*(ret + j++) = *(*line + i++);
+		/*if (is_sep(";|&", ret[j]) && ret[j - 1] != '\\')
+		{
+			ret[i] = 0;
+			break ;
+		}*/
+	}
+	/*i = -1;
+	while (ret[++i])
+	{
 		if (is_sep(";|&", ret[i]) && ret[i - 1] != '\\')
 		{
 			ret[i] = 0;
 			break ;
 		}
-	}
+	}*/
 	*line += i;
 	*flag = flag_checker(&ret);
 	return(ret);
@@ -133,7 +142,7 @@ char		*get_content(char **line, int *flag)
 ** a pointer of parameter resived x positions;
 ** @param line pointer to memory of the string
 ** @return 1 if flag found, 0 if flag not found and -1 on fail
-*/
+
 int			get_flag(char **line)
 {
 	int i;
@@ -153,7 +162,8 @@ int			get_flag(char **line)
 	if (i > 0)
 		return(1);
 	return(i);
-}*/
+}
+*/
 
 /**ech
 ** Functions cleans all spaces from the front of the string and moves

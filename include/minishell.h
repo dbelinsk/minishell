@@ -60,10 +60,6 @@ char	*get_content(char **line, int *flag);
 char	*get_path(char *type, char *paths);
 
 void		clean_cmd(t_command **cmd);
-void	backslash_remover(char **line, char **ret, int *i, int *j);
-void 	quapo_remover(char **line, char **ret, int *i, int *j);
-int		flag_checker(char **ret);
-
 int			s_exit(t_command *cmd);
 int			s_echo(t_command *cmd);
 int			s_cd(t_command *cmd);
@@ -71,5 +67,10 @@ int			s_pwd(t_command *cmd);
 int			s_env(t_command *cmd);
 int			s_export(t_command *cmd);
 int			s_unset(t_command *cmd);
+
+
+void	backslash_remover(char **line, char **ret, int *i, int *j);
+void 	quapo_remover(char **line, char **ret, int *i, int *j);
+int		flag_checker(char **ret);
 
 #endif
