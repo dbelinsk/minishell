@@ -66,15 +66,16 @@ char		*get_type(char **line)
 		i++;
 	ret = ft_calloc(ft_strlen(*line + i), sizeof(char));
 	j = 0;
-	while (*(*line + i) && *(*line + i) != ' ')
+	while (*(*line + i)  && !is_sep(" ;|&", *(*line + i)))
 	{
-
 		if (*(*line + i) == '\\')
 			backslash_remover(line, &ret, &i, &j);
 		else if (*(*line + i) == '\'' || *(*line + i) == '\"')
 			quapo_remover(line, &ret, &i, &j);
+
 		else
 			*(ret + j++) = *(*line + i++);
+
 		/*if ((ret[i] == ' ' && ret[i - 1] != '\\')
 			|| is_sep("|;&", ret[i]))
 		{
@@ -107,21 +108,18 @@ char		*get_content(char **line, int *flag)
 		i++;
 	ret = ft_calloc(ft_strlen(*line + i), sizeof(char));
 	j = 0;
-	while (*(*line + i) && (*(*line + i) != '|' || *(*line + i) != ';'))
+	while (*(*line + i) && !is_sep(";|&", *(*line + i)))
 	{
 		if (*(*line + i) == '\\')
 			backslash_remover(line, &ret, &i, &j);
 		else if (*(*line + i) == '\'' || *(*line + i) == '\"')
 			quapo_remover(line, &ret, &i, &j);
-		else if (*(*line + i) == ' ' && *(*line + i + 1) == ' ')
+		else if ((*(*line + i) == ' ' && *(*line + i + 1) == ' '))
 			i++;
 		else
 			*(ret + j++) = *(*line + i++);
-		/*if (is_sep(";|&", ret[j]) && ret[j - 1] != '\\')
-		{
-			ret[i] = 0;
-			break ;
-		}*/
+		/*if(is_sep(";|&", *(*line + i)))
+    			break;*/
 	}
 	/*i = -1;
 	while (ret[++i])
@@ -183,6 +181,11 @@ int			get_sep(char **line)
 		(*line)++;
 	if (!ft_strncmp(*line, ";", 1))
 		ret = SEMCOL;
+	else if (!ft_strncmp(*line, "||", 2))
+	{
+		(*line)++;
+		ret = 9;
+	}
 	else if (!ft_strncmp(*line, "|", 1))
 		ret = PIPE;
 	else if (!ft_strncmp(*line, "&&", 2))

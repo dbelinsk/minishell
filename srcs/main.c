@@ -17,7 +17,6 @@ void			signal_handler(int sig)
 	if (sig == SIGINT)
 	{
 		write(STDOUT_FILENO, "\033[2D\033[J\n", 10);
-		write(STDOUT_FILENO, "\033[1D", 4);
 		put_promt();
 	}
 	if (sig == SIGQUIT)
@@ -29,6 +28,7 @@ int main(int argc, char **argv)
 	t_command	*cmd;
 	char 		*line = NULL;
 
+	setenv("PAPA", "MARIO", 1);
 	//signal(SIGINT, signal_handler);
 	signal(SIGQUIT, signal_handler);
 	cmd = NULL;
