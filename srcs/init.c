@@ -73,10 +73,18 @@ void		init(t_command **cmd, char *line)
 	while (ft_strlen(line))
 	{
 		item.type = get_type(&line);
+		item.flag = get_flag(&line);
 		item.content = get_content(&line, &item.flag);
 		item.sep = get_sep(&line);
 		item.path = get_path(item.type, paths);
 		item.exe = get_exe(item.type);
+	/*	printf("type = [%s]\n", item.type);
+		printf("flag = [%d]\n", item.flag);
+		printf("content = [%s]\n", item.content);
+		printf("path = [%s]\n", item.path);
+		printf("sep = [%d]\n", item.sep);
+		printf("-------------------------------\n");*/
 		cmd_push_back(cmd, item);
+		//break ;
 	}
 }

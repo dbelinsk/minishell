@@ -50,20 +50,32 @@ int			ft_unsetenv(const char *name)
 
 int			ft_putenv(char *str)
 {
-	/*extern char	**environ;
+	extern char	**environ;
 	char		**ep;
-	char		**last_environ;
-	char		**new_environ;
+	char		*new_env[BUFSIZ];
+	char		**aux;
 	int			size;
 
 	ep = environ;
-
-	if (ep)
+	size = 0;
+	while (*ep)
 	{
-		while (ep)
+		size++;
+		ep++;
 	}
-
-*/
+	/*if (!(new_env = malloc(sizeof(char**) * (size + 2))))
+	{
+		errno = ESRCH;
+		return (-1);
+	}*/
+	aux = new_env;
+	ep = environ;
+	while (*ep)
+		*(aux++) = *(ep++);
+	*(aux++) = str;
+	*aux = NULL;
+	//free(environ);
+	environ = new_env;
 	return (0);
 }
 
@@ -84,7 +96,7 @@ int			ft_setenv(const char *name, const char *value, int overwrite)
 	tmp = ft_strjoin(name, "=");
 	env = ft_strjoin(tmp, value);
 	free(tmp);
-	ret = putenv(env);
+	ret = ft_putenv(env);
 	return (ret != 0 ? -1 : 0);
 }
 

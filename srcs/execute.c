@@ -64,7 +64,6 @@ int				s_echo(t_command *cmd)
 	char	*args[4];
 	int		i;
 
-//	tmp_print_item(cmd);
 	i = 0;
 	args[i++] = cmd->type;
 	if (cmd->flag)
@@ -169,7 +168,6 @@ int				s_env(t_command *cmd)
 
 int			s_export(t_command *cmd)
 {
-	printf("%s\n", ft_getenv("PAPA"));
 	char		*name;
 	char		*val;
 	int			eq;
@@ -180,8 +178,14 @@ int			s_export(t_command *cmd)
 	eq = (int)(val - cmd->content);
 	name[eq] = 0;
 	val++;
-	ft_setenv(name, val, 1);
-	printf("%s\n", ft_getenv("PAPA"));
+	if (cmd->prev)
+		if (cmd->prev->sep == PIPE)
+			return (1);
+	if (cmd->sep == PIPE)
+		return (1);
+	if (ft_setenv(name, val, 1) < 0)
+		m_error(cmd->type, val, IDENTIFYER_ERROR);
+	//printf("%d\n", ft_setenv(name, val, 1));
 	return (1);
 }
 

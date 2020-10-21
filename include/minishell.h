@@ -6,6 +6,7 @@
 # define UNDEFINED_ERR 2
 # define INIT_ERROR 3
 # define DIR_ERROR 4
+# define IDENTIFYER_ERROR 5
 
 # include <get_next_line.h>
 # include <libft.h>
@@ -56,6 +57,7 @@ int		ft_unsetenv(const char *name);
 int		is_sep(char *s, char c);
 
 char	*get_type(char **line);
+int		get_flag(char **line);
 char	*get_content(char **line, int *flag);
 char	*get_path(char *type, char *paths);
 
@@ -72,5 +74,10 @@ int			s_unset(t_command *cmd);
 void	backslash_remover(char **line, char **ret, int *i, int *j);
 void 	quapo_remover(char **line, char **ret, int *i, int *j);
 int		flag_checker(char **ret);
+
+char		*bslash_quote_formater(char **line, int end);
+int			formater_env_handler(char **line, char *aux, int *x, char q);
+
+
 
 #endif
