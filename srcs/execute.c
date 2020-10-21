@@ -207,6 +207,7 @@ int				execute(t_command **cmd)
 	aux = *cmd;
 	while (aux)
 	{
+		//tmp_print_item(aux);
 		if (aux->exe)
 		{
 			if ((ret = aux->exe(aux)) < 0)

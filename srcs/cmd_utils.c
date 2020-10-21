@@ -58,10 +58,13 @@ char		*get_content(char **line, int *flag)
 		*line += 1;
 	while ((*line)[end])
 	{
-		if (!q)
-			q = (*line)[end];
-		if (q == (*line)[end])
+		if (is_sep("\'\"", (*line)[end]))
+		{
+			if (!q)
+				q = (*line)[end];
+			if (q == (*line)[end])
 				opened++;
+		}
 		if (opened == 2)
 			opened = 0;
 		if (is_sep("|&;", (*line)[end]) && !opened)
@@ -101,10 +104,10 @@ int			get_flag(char **line)
 			if (q == (*line)[end])
 				opened++;
 		}
-		if (is_sep(" |&;", (*line)[end]) && !opened)
-			break ;
 		if (opened == 2)
 			opened = 0;
+		if (is_sep(" |&;", (*line)[end]) && !opened)
+			break ;
 		end++;
 	}
 	fmt = bslash_quote_formater(line, end);
