@@ -49,6 +49,8 @@ void			print_all_items(t_command *tmp)
 
 int				s_exit(t_command *cmd)
 {
+	if (cmd->redirection)
+			redirect(cmd, NULL);
 	if (cmd->prev)
 		if (cmd->prev->sep == PIPE ||
 			(cmd->prev->sep == AND && cmd->prev->err))
@@ -57,6 +59,8 @@ int				s_exit(t_command *cmd)
 		return (1);
 	return (0);
 }
+
+
 
 int				s_echo(t_command *cmd)
 {
@@ -80,7 +84,12 @@ int				s_echo(t_command *cmd)
 			if (cmd->prev && cmd->prev->sep == 9)
 				return (1);
 			else
-				execve (cmd->path, args, NULL);
+			{
+				if (cmd->redirection)
+					redirect(cmd, cmd->content);
+				else
+					execve(cmd->path, args, NULL);
+			}
 		}
 	}
 	else if (child > 0)
@@ -114,6 +123,8 @@ int				s_cd(t_command *cmd)
 		if (cmd->prev)
 			if (cmd->prev->err)
 				return (-1);
+		if (cmd->redirection)
+			redirect(cmd, NULL);
 		chdir(path);
 	}
 	return (1);
@@ -121,6 +132,7 @@ int				s_cd(t_command *cmd)
 
 int				s_pwd(t_command *cmd)
 {
+	char	cwd[BUFSIZ];
 	pid_t	child;
 	char	*args[2];
 
@@ -132,7 +144,15 @@ int				s_pwd(t_command *cmd)
 			if (cmd->prev->err)
 				return (-1);
 		if (cmd->sep != PIPE)
-			execve(cmd->path, args, NULL);
+		{
+			if (cmd->redirection)
+			{
+				getcwd(cwd, sizeof(cwd));
+				redirect(cmd, cwd);
+			}
+			else
+				execve(cmd->path, args, NULL);
+		}
 	}
 	else if (child > 0)
 		wait(&child);
@@ -157,7 +177,14 @@ int				s_env(t_command *cmd)
 			if (cmd->prev->err && cmd->prev->sep != PIPE)
 				return (-1);
 		if (cmd->sep != PIPE)
-			execve(args[0], args, environ);
+		{
+			if (cmd->redirection)
+			{
+				redirect(cmd, NULL);
+			}
+			else
+				execve(args[0], args, environ);
+		}
 	}
 	else if (child > 0)
 		wait(&child);
@@ -183,14 +210,17 @@ int			s_export(t_command *cmd)
 			return (1);
 	if (cmd->sep == PIPE)
 		return (1);
+	if (cmd->redirection)
+			redirect(cmd, NULL);
 	if (ft_setenv(name, val, 1) < 0)
 		m_error(cmd->type, val, IDENTIFYER_ERROR);
-	//printf("%d\n", ft_setenv(name, val, 1));
 	return (1);
 }
 
 int			s_unset(t_command *cmd)
 {
+	if (cmd->redirection)
+			redirect(cmd, NULL);
 	ft_unsetenv(cmd->content);
 	return (1);
 }

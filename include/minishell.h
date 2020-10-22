@@ -19,10 +19,13 @@
 # include <signal.h>
 # include <dirent.h>
 # include <errno.h>
-# define NONE		0
-# define SEMCOL		1
-# define PIPE		2
-# define AND		3
+# define NONE					0
+# define SEMCOL					1
+# define PIPE					2
+# define AND					3
+# define REDIRECTION_READ		1
+# define REDIRECTION_WRITE		2
+# define REDIRECTION_APPEND		3
 
 typedef struct 		s_command
 {
@@ -31,6 +34,8 @@ typedef struct 		s_command
 	char				*content;
 	int					flag;		// 0 o 1
 	int					sep;
+	int					redirection;
+	char				*fname;
 	int					err;
 	int					(*exe)();
 	struct s_command	*next;
@@ -60,6 +65,8 @@ char	*get_type(char **line);
 int		get_flag(char **line);
 char	*get_content(char **line, int *flag);
 char	*get_path(char *type, char *paths);
+int		get_redirection(char **line);
+
 
 void		clean_cmd(t_command **cmd);
 int			s_exit(t_command *cmd);
@@ -77,6 +84,8 @@ int		flag_checker(char **ret);
 
 char		*bslash_quote_formater(char **line, int end);
 int			formater_env_handler(char **line, char *aux, int *x, char q);
+void		redirect(t_command *cmd, char *content);
+
 
 
 

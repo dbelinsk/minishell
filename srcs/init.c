@@ -9,6 +9,7 @@ void		clean_cmd(t_command **cmd)
 		free((*cmd)->type);
 		free((*cmd)->content);
 		free((*cmd)->path);
+		free((*cmd)->fname);
 		tmp = (*cmd)->next;
 		free(*cmd);
 		*cmd = tmp;
@@ -28,6 +29,8 @@ t_command	*new_cmd_item(t_command item_cmd)
 	cmd->path = item_cmd.path;
 	cmd->content = item_cmd.content;
 	cmd->flag = item_cmd.flag;
+	cmd->redirection = item_cmd.redirection;
+	cmd->fname = item_cmd.fname;
 	cmd->sep = item_cmd.sep;
 	cmd->err = 0;
 	cmd->exe = item_cmd.exe;
@@ -75,13 +78,18 @@ void		init(t_command **cmd, char *line)
 		item.type = get_type(&line);
 		item.flag = get_flag(&line);
 		item.content = get_content(&line, &item.flag);
+		item.redirection = get_redirection(&line);
+		if (item.redirection)
+			item.fname = get_content(&line, &item.flag);
+		else
+			item.fname = NULL;
 		item.sep = get_sep(&line);
 		item.path = get_path(item.type, paths);
 		item.exe = get_exe(item.type);
-	/*	printf("type = [%s]\n", item.type);
-		printf("flag = [%d]\n", item.flag);
-		printf("content = [%s]\n", item.content);
-		printf("path = [%s]\n", item.path);
+	/*	printf("fname = [%s]\n", item.fname);
+		printf("redirection = [%d]\n", item.redirection);
+		printf("content = [%s]\n", item.content);*/
+		/*printf("path = [%s]\n", item.path);
 		printf("sep = [%d]\n", item.sep);
 		printf("-------------------------------\n");*/
 		cmd_push_back(cmd, item);

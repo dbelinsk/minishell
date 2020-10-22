@@ -30,7 +30,7 @@ char		*get_type(char **line)
 		}
 		if (opened == 2)
 			opened = 0;
-		if (is_sep(" |&;", (*line)[end]) && !opened)
+		if (is_sep(" |&;<>", (*line)[end]) && !opened)
 			break ;
 		end++;
 	}
@@ -67,10 +67,12 @@ char		*get_content(char **line, int *flag)
 		}
 		if (opened == 2)
 			opened = 0;
-		if (is_sep("|&;", (*line)[end]) && !opened)
+		if (is_sep("|&;<>", (*line)[end]) && !opened)
 			break ;
 		end++;
 	}
+	while ((*line)[end - 1] && (*line)[end - 1] == ' ')
+		end--;
 	return (bslash_quote_formater(line, end));
 }
 
@@ -106,7 +108,7 @@ int			get_flag(char **line)
 		}
 		if (opened == 2)
 			opened = 0;
-		if (is_sep(" |&;", (*line)[end]) && !opened)
+		if (is_sep(" |&;<>", (*line)[end]) && !opened)
 			break ;
 		end++;
 	}
@@ -120,6 +122,29 @@ int			get_flag(char **line)
 	}
 	free(fmt);
 	return (flag);
+}
+
+int			get_redirection(char **line)
+{
+	int		ret;
+
+	ret = NONE;
+	if (!*line)
+		return (-1);
+	while (**line && **line == ' ')
+		(*line)++;
+	if (!ft_strncmp(*line, "<", 1))
+		ret = REDIRECTION_READ;
+	else if (!ft_strncmp(*line, ">>", 2))
+	{
+		(*line)++;
+		ret = REDIRECTION_APPEND;
+	}
+	else if (!ft_strncmp(*line, ">", 1))
+		ret = REDIRECTION_WRITE;
+	if(ret)
+		(*line)++;
+	return (ret);
 }
 
 /*
@@ -189,6 +214,7 @@ char		*get_path(char *type, char *paths)
 	free(path_arr);
 	return (full_path);
 }
+
 
 /**
  ** TODO - modify parameters to recive (char *type)
