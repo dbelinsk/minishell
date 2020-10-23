@@ -77,10 +77,10 @@ void		init(t_command **cmd, char *line)
 	{
 		item.type = get_type(&line);
 		item.flag = get_flag(&line);
-		item.content = get_content(&line, &item.flag);
+		item.content = get_content(&line);
 		item.redirection = get_redirection(&line);
 		if (item.redirection)
-			item.fname = get_content(&line, &item.flag);
+			item.fname = get_content(&line);
 		else
 			item.fname = NULL;
 		item.sep = get_sep(&line);

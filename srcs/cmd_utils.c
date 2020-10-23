@@ -45,7 +45,7 @@ char		*get_type(char **line)
 **			NULL on fail
 */
 
-char		*get_content(char **line, int *flag)
+char		*get_content(char **line)
 {
 	int				opened;
 	char			q;
@@ -83,17 +83,17 @@ char		*get_content(char **line, int *flag)
 ** @return 1 if flag found, 0 if flag not found and -1 on fail
 */
 
-int			get_flag(char **line)
+char			*get_flag(char **line)
 {
 	char		*fmt;
 	int			end;
 	int			opened;
-	int			flag;
+	char		*flag;
 	char		q;
 
 	end = 0;
 	opened = 0;
-	flag = 0;
+	flag = NULL;
 	q = 0;
 	while (**line && is_sep(" ", **line))
 		*line += 1;
@@ -114,12 +114,9 @@ int			get_flag(char **line)
 	}
 	fmt = bslash_quote_formater(line, end);
 	if (!ft_strncmp(fmt, "-n", 2) && ft_strlen(fmt) == 2)
-		flag = 1;
+		flag = ft_strdup("-n");
 	else
-	{
-		flag = 0;
 		*line -= end;
-	}
 	free(fmt);
 	return (flag);
 }

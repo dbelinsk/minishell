@@ -25,6 +25,8 @@ int				bck_slash_handler(char **line, char *fmt, int *pos, char q)
 		tmp++;
 		ret = 1;
 	}
+	else if (*(tmp + 1) && *(tmp + 1) == '\\' && q == '\"')
+		tmp++;
 	else if (*(tmp + 1) && *(tmp + 1) != '$')
 		fmt[i++] = *(tmp++);
 	*pos = i;

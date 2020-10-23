@@ -5,7 +5,7 @@ void			tmp_print_item(t_command *item)
 	printf("type = [%s]\n", item->type);
 	printf("path = [%s]\n", item->path);
 	printf("content = [%s]\n", item->content);
-	printf("flag = [%d]\n", item->flag);
+	printf("flag = [%s]\n", item->flag);
 	printf("sep = [%d]\n", item->sep);
 	printf("err = [%d]\n", item->err);
 	if (item->prev)
@@ -13,7 +13,7 @@ void			tmp_print_item(t_command *item)
 		printf("prev->type = [%s]\n", item->prev->type);
 		printf("prev->path = [%s]\n", item->prev->path);
 		printf("prev->content = [%s]\n", item->prev->content);
-		printf("prev->flag = [%d]\n", item->prev->flag);
+		printf("prev->flag = [%s]\n", item->prev->flag);
 		printf("prev->sep = [%d]\n", item->prev->sep);
 		printf("prev->err = [%d]\n", item->prev->err);
 	}
@@ -22,7 +22,7 @@ void			tmp_print_item(t_command *item)
 		printf("next->type = [%s]\n", item->next->type);
 		printf("next->path = [%s]\n", item->next->path);
 		printf("next->content = [%s]\n", item->next->content);
-		printf("next->flag = [%d]\n", item->next->flag);
+		printf("next->flag = [%s]\n", item->next->flag);
 		printf("next->sep = [%d]\n", item->next->sep);
 		printf("next->err = [%d]\n", item->next->err);
 	}
@@ -70,18 +70,17 @@ int				s_echo(t_command *cmd)
 
 	i = 0;
 	args[i++] = cmd->type;
-	if (cmd->flag)
-		args[i++] = "-n";
+	args[i++] = cmd->flag;
 	args[i++] = cmd->content;
 	args[i++] = (char*)0;
 	if ((child= fork()) == 0)
 	{
 		if (cmd->prev)
-			if (cmd->prev->err)
+			if (cmd->prev->err && cmd->prev->sep != PIPE)
 				return (-1);
-		if ((cmd->sep != PIPE || cmd->sep == 9))
+		if ((cmd->sep != PIPE))
 		{
-			if (cmd->prev && cmd->prev->sep == 9)
+			if (cmd->prev && cmd->prev->sep != PIPE)
 				return (1);
 			else
 			{

@@ -32,8 +32,8 @@ typedef struct 		s_command
 	char				*type;
 	char				*path;
 	char				*content;
-	int					flag;		// 0 o 1
-	int					sep;
+	char				*flag;		// 0 o 1
+	char				sep;
 	int					redirection;
 	char				*fname;
 	int					err;
@@ -62,8 +62,8 @@ int		ft_unsetenv(const char *name);
 int		is_sep(char *s, char c);
 
 char	*get_type(char **line);
-int		get_flag(char **line);
-char	*get_content(char **line, int *flag);
+char	*get_flag(char **line);
+char	*get_content(char **line);
 char	*get_path(char *type, char *paths);
 int		get_redirection(char **line);
 
