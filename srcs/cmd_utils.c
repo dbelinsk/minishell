@@ -8,7 +8,7 @@
 **			NULL on fail
 */
 
-char		*get_type(char **line)
+char			*get_type(char **line)
 {
 	int			end;
 	int			opened;
@@ -45,11 +45,11 @@ char		*get_type(char **line)
 **			NULL on fail
 */
 
-char		*get_content(char **line)
+char			*get_content(char **line)
 {
-	int				opened;
-	char			q;
-	int 			end;
+	int			opened;
+	char		q;
+	int 		end;
 
 	end = 0;
 	opened = 0;
@@ -60,10 +60,8 @@ char		*get_content(char **line)
 	{
 		if (is_sep("\'\"", (*line)[end]))
 		{
-			if (!q)
-				q = (*line)[end];
-			if (q == (*line)[end])
-				opened++;
+			(!q) ? q = (*line)[end] : 0;
+			(q == (*line)[end]) ? opened++ : 0;
 		}
 		if (opened == 2)
 			opened = 0;
@@ -124,9 +122,9 @@ char			*get_flag(char **line)
 	return (flag);
 }
 
-int			get_redirection(char **line)
+int				get_redirection(char **line)
 {
-	int		ret;
+	int			ret;
 
 	ret = NONE;
 	if (!*line)
@@ -155,9 +153,9 @@ int			get_redirection(char **line)
 ** no separator found and -1 on fail
 */
 
-int			get_sep(char **line)
+int				get_sep(char **line)
 {
-	int		ret;
+	int			ret;
 
 	ret = NONE;
 	if (!*line)
@@ -193,13 +191,13 @@ int			get_sep(char **line)
 **			of executable, NULL on fail
 */
 
-char		*get_path(char *type, char *paths)
+char			*get_path(char *type, char *paths)
 {
-	char			**path_arr;
-	struct stat		filestat;
-	char			*full_path;
-	char			*tmp;
-	int				i;
+	char		**path_arr;
+	struct stat	filestat;
+	char		*full_path;
+	char		*tmp;
+	int			i;
 
 	paths += 5;
 	path_arr = ft_split(paths, ':');
@@ -228,9 +226,9 @@ char		*get_path(char *type, char *paths)
  ** TODO - get EXECUTABLE function based on recived cmd (or type)
  ** TODO - return EXECUTABLE function on success, NULL on fail
  */
-void		*get_exe(char *type)
+void			*get_exe(char *type)
 {
-	int		len;
+	int			len;
 
 	len = ft_strlen(type);
 	if (!ft_strncmp(type, "exit", len))
@@ -241,15 +239,14 @@ void		*get_exe(char *type)
 		return (&s_cd);
 	else if (!ft_strncmp(type, "pwd", len))
 		return (&s_pwd);
-	//else if (!ft_strncmp(type, "env", len))
-	//	return (&s_env);
+	else if (!ft_strncmp(type, "env", len))
+		return (&s_env);
 	else if (!ft_strncmp(type, "export", len))
 		return (&s_export);
 	else if (!ft_strncmp(type, "unset", len))
 		return (&s_unset);
 	else
 		return (&universal);
-
 	//TODO else universal
 	return (NULL);
 }

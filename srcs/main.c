@@ -6,13 +6,13 @@
 /*   By: mpernia- <mpernia-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/02 21:19:01 by mpernia-          #+#    #+#             */
-/*   Updated: 2020/10/08 00:30:04 by mpernia-         ###   ########.fr       */
+/*   Updated: 2020/10/24 20:40:30 by mpernia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void			signal_handler(int sig)
+static void		signal_handler(int sig)
 {
 	if (sig == SIGINT)
 	{
@@ -23,7 +23,7 @@ void			signal_handler(int sig)
 		write(STDOUT_FILENO, "\033[2D\033[J", 7);
 }
 
-int main(int argc, char **argv, char **envp)
+int 			main(int argc, char **argv, char **envp)
 {
 	t_command	*cmd;
 	char 		*line = NULL;
