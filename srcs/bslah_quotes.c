@@ -51,6 +51,8 @@ int				quote_handler(char **line, char *q, int *opened)
 
 	ret = 0;
 	tmp = *line;
+	if (*(tmp + 1) && (*(tmp + 1) == '\"' || *(tmp + 1) == '\''))
+		tmp++;
 	if (!*q)
 		*q = *tmp;
 	if (*q == *tmp)

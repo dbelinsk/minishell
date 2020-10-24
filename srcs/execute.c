@@ -73,6 +73,11 @@ int				s_echo(t_command *cmd)
 	args[i++] = cmd->flag;
 	args[i++] = cmd->content;
 	args[i++] = (char*)0;
+	/*if (cmd->flag)
+		ft_putstr_fd(cmd->content, 1);
+	else
+		ft_putendl_fd(cmd->content, 1);*/
+
 	if ((child= fork()) == 0)
 	{
 		if (cmd->prev)
@@ -80,7 +85,7 @@ int				s_echo(t_command *cmd)
 				return (-1);
 		if ((cmd->sep != PIPE))
 		{
-			if (cmd->prev && cmd->prev->sep != PIPE)
+			if (cmd->prev && cmd->prev->sep != PIPE && cmd->prev->err)
 				return (1);
 			else
 			{
@@ -150,7 +155,9 @@ int				s_pwd(t_command *cmd)
 				redirect(cmd, cwd);
 			}
 			else
-				execve(cmd->path, args, NULL);
+				if (execve(cmd->path, args, NULL) == -1)
+					printf("bash: %s: %s\n",cmd->path, strerror(errno));
+				//execve(cmd->path, args, NULL);
 		}
 	}
 	else if (child > 0)
@@ -222,6 +229,26 @@ int			s_unset(t_command *cmd)
 			redirect(cmd, NULL);
 	ft_unsetenv(cmd->content);
 	return (1);
+}
+
+void		universal(t_command *cmd)
+{
+	char	cwd[BUFSIZ];
+	pid_t	child;
+	char	*args[2];
+
+	args[0] = cmd->type;
+	args[1] = (char*)0;
+	if ((child= fork()) == 0)
+	{
+		if (execve(cmd->path, args, NULL) == -1)
+			printf("bash: %s: %s\n",cmd->path, strerror(errno));
+	}
+	else if (child > 0)
+		wait(&child);
+	else
+		return ;
+	return ;
 }
 
 /**

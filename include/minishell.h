@@ -47,7 +47,7 @@ void	echo(char **line);
 void	*get_exe(char *type);
 void	check_cmd(char **line);
 void	format_cmd(char **line);
-void	init(t_command **cmd, char *line);
+int	init(t_command **cmd, char *line);
 
 int		get_sep(char **line);
 int		get_cmd(char **line);
@@ -86,7 +86,7 @@ char		*bslash_quote_formater(char **line, int end);
 int			formater_env_handler(char **line, char *aux, int *x, char q);
 void		redirect(t_command *cmd, char *content);
 
-
+void		universal(t_command *cmd);
 
 
 #endif

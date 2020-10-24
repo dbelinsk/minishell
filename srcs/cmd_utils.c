@@ -108,7 +108,7 @@ char			*get_flag(char **line)
 		}
 		if (opened == 2)
 			opened = 0;
-		if (is_sep(" |&;<>", (*line)[end]) && !opened)
+		if (is_sep(" |&;<>", (*line)[end]) && !opened && (*line)[end - 1] != '\\')
 			break ;
 		end++;
 	}
@@ -116,7 +116,10 @@ char			*get_flag(char **line)
 	if (!ft_strncmp(fmt, "-n", 2) && ft_strlen(fmt) == 2)
 		flag = ft_strdup("-n");
 	else
+	{
+		flag = ft_strdup("");
 		*line -= end;
+	}
 	free(fmt);
 	return (flag);
 }
@@ -172,6 +175,13 @@ int			get_sep(char **line)
 	}
 	if(ret)
 		(*line)++;
+	while (**line && **line == ' ')
+		(*line)++;
+	if (**line == ';')
+	{
+		printf("syntax error\n");
+		return (-1);
+	}
 	return (ret);
 }
 
@@ -225,17 +235,21 @@ void		*get_exe(char *type)
 	len = ft_strlen(type);
 	if (!ft_strncmp(type, "exit", len))
 		return (&s_exit);
-	if (!ft_strncmp(type, "echo", len))
+	else if (!ft_strncmp(type, "echo", len))
 		return (&s_echo);
-	if (!ft_strncmp(type, "cd", len))
+	else if (!ft_strncmp(type, "cd", len))
 		return (&s_cd);
-	if (!ft_strncmp(type, "pwd", len))
+	else if (!ft_strncmp(type, "pwd", len))
 		return (&s_pwd);
-	if (!ft_strncmp(type, "env", len))
-		return (&s_env);
-	if (!ft_strncmp(type, "export", len))
+	//else if (!ft_strncmp(type, "env", len))
+	//	return (&s_env);
+	else if (!ft_strncmp(type, "export", len))
 		return (&s_export);
-	if (!ft_strncmp(type, "unset", len))
+	else if (!ft_strncmp(type, "unset", len))
 		return (&s_unset);
+	else
+		return (&universal);
+
+	//TODO else universal
 	return (NULL);
 }

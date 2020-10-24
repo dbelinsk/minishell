@@ -65,13 +65,13 @@ void	cmd_push_back(t_command **cmd, t_command cmd_item)
  ** type, content, path are reservated in memory
  ** Initializes the comandline struct chain
  */
-void		init(t_command **cmd, char *line)
+int		init(t_command **cmd, char *line)
 {
 	t_command		item;
 	char			*paths;
 
 	if (!line || !cmd)
-		return ;
+		return -1;
 	paths = ft_getenv("PATH");
 	while (ft_strlen(line))
 	{
@@ -83,7 +83,8 @@ void		init(t_command **cmd, char *line)
 			item.fname = get_content(&line);
 		else
 			item.fname = NULL;
-		item.sep = get_sep(&line);
+		if ((item.sep = get_sep(&line)) < 0)
+			return (-1);
 		item.path = get_path(item.type, paths);
 		item.exe = get_exe(item.type);
 	/*	printf("fname = [%s]\n", item.fname);
@@ -95,4 +96,5 @@ void		init(t_command **cmd, char *line)
 		cmd_push_back(cmd, item);
 		//break ;
 	}
+	return (0);
 }

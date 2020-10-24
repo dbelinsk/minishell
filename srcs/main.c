@@ -36,7 +36,8 @@ int main(int argc, char **argv, char **envp)
 	{
 		if (!get_cmd(&line))
 			return (m_error(NULL, NULL, UNDEFINED_ERR));
-		init(&cmd, line);
+		if (init(&cmd, line) < 0)
+			continue ;
 		free(line);
 		if (!execute(&cmd))
 			break ;
