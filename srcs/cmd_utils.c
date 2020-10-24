@@ -1,177 +1,160 @@
 #include "minishell.h"
 
-void	backslash_remover(char **line, char **ret, int *i, int *j)
-{
-	(*i)++;
-	*(*ret + (*j)++) = *(*line + (*i)++);
-}
-
-void 	quapo_remover(char **line, char **ret, int *i, int *j)
-{
-	char	quapo;
-	int		quapo_found;
-
-	quapo = *(*line + *i);
-	(*i)++;
-	quapo_found = 0;
-	while (*(*line + *i) && quapo_found < 1)
-	{
-		if (*(*line + *i) == '\\')
-			backslash_remover(line, ret, i, j);
-		else if (*(*line + *i) == quapo)
-		{
-			quapo_found = 1;
-			(*i)++;
-		}
-		else
-			*(*ret + (*j)++) = *(*line + (*i)++);
-	}
-	if (quapo_found == 0)
-		ft_printf("error, amigo.");
-}
-
-int		flag_checker(char **ret)
-{
-	char *aux;
-
-	if (!ft_strncmp(*ret, "-n ", 3))
-	{
-		aux = ft_strdup(*ret + 3);
-		//free(*ret);
-		*ret = aux;
-		//free(aux);
-		return 1;
-	}
-	return 0;
-}
-
-/**
-** Functions cleans all spaces from the front of the string, stores x
-** characters until next space in the variable to be returned and moves
-** a pointer of parameter resived x positions;
-** @param line pointer to memory of the string
+/*
+** Functions cleans all spaces from the front of the string, finds position
+** until next space[ ], pipe[|], and[&], semicolin[;].
+** @param line = original string to modify
 ** @return pointer to memory reservated string that represents a type
 **			NULL on fail
 */
+
 char		*get_type(char **line)
 {
-	int i;
-	int j;
-	char *ret;
+	int			end;
+	int			opened;
+	char		q;
 
-	if (!*line)
-		return(NULL);
-	i = 0;
-	while(*(*line + i) && *(*line + i) == ' ')
-		i++;
-	ret = ft_calloc(ft_strlen(*line + i), sizeof(char));
-	j = 0;
-	while (*(*line + i) && *(*line + i) != ' ')
+	end = 0;
+	opened = 0;
+	q = 0;
+	while (**line && is_sep(" ", **line))
+		*line += 1;
+	while ((*line)[end])
 	{
-
-		if (*(*line + i) == '\\')
-			backslash_remover(line, &ret, &i, &j);
-		else if (*(*line + i) == '\'' || *(*line + i) == '\"')
-			quapo_remover(line, &ret, &i, &j);
-		else
-			*(ret + j++) = *(*line + i++);
-		/*if ((ret[i] == ' ' && ret[i - 1] != '\\')
-			|| is_sep("|;&", ret[i]))
+		if (is_sep("\"\'", (*line)[end]))
 		{
-			ret[i] = 0;
+			if (!q)
+				q = (*line)[end];
+			if (q == (*line)[end])
+				opened++;
+		}
+		if (opened == 2)
+			opened = 0;
+		if (is_sep(" |&;<>", (*line)[end]) && !opened)
 			break ;
-		}*/
+		end++;
 	}
-	*line += i;
-	return(ret);
+	return (bslash_quote_formater(line, end));
 }
 
 /*
-** Functions cleans all spaces from the front of the string, stores in the
-** variable to be returned x characters until \0 | or ; is found and moves
-** a pointer of parameter resived x positions;
-** @param line pointer to memory of the string
-** @return pointer to memory reservated string that represents a content
+** Functions cleans all spaces from the front of the string, finds position
+** until next pipe[|], and[&], semicolin[;].
+** @param line = original string to modify
+** @return pointer to memory reservated string that represents a type
 **			NULL on fail
 */
-char		*get_content(char **line, int *flag)
-{
-	int i;
-	int j;
-	char *ret;
 
-	if (!*line)
-		return(NULL);
-	i = 0;
-	while(*(*line + i) && *(*line + i) == ' ')
-		i++;
-	ret = ft_calloc(ft_strlen(*line + i), sizeof(char));
-	j = 0;
-	while (*(*line + i) && (*(*line + i) != '|' || *(*line + i) != ';'))
+char		*get_content(char **line)
+{
+	int				opened;
+	char			q;
+	int 			end;
+
+	end = 0;
+	opened = 0;
+	q = 0;
+	while (**line && is_sep(" ", **line))
+		*line += 1;
+	while ((*line)[end])
 	{
-		if (*(*line + i) == '\\')
-			backslash_remover(line, &ret, &i, &j);
-		else if (*(*line + i) == '\'' || *(*line + i) == '\"')
-			quapo_remover(line, &ret, &i, &j);
-		else if (*(*line + i) == ' ' && *(*line + i + 1) == ' ')
-			i++;
-		else
-			*(ret + j++) = *(*line + i++);
-		/*if (is_sep(";|&", ret[j]) && ret[j - 1] != '\\')
+		if (is_sep("\'\"", (*line)[end]))
 		{
-			ret[i] = 0;
-			break ;
-		}*/
-	}
-	/*i = -1;
-	while (ret[++i])
-	{
-		if (is_sep(";|&", ret[i]) && ret[i - 1] != '\\')
-		{
-			ret[i] = 0;
-			break ;
+			if (!q)
+				q = (*line)[end];
+			if (q == (*line)[end])
+				opened++;
 		}
-	}*/
-	*line += i;
-	*flag = flag_checker(&ret);
-	return(ret);
+		if (opened == 2)
+			opened = 0;
+		if (is_sep("|&;<>", (*line)[end]) && !opened)
+			break ;
+		end++;
+	}
+	while ((*line)[end - 1] && (*line)[end - 1] == ' ')
+		end--;
+	return (bslash_quote_formater(line, end));
 }
 
-/**
+/*
 ** Functions cleans all spaces from the front of the string and moves
 ** a pointer of parameter resived x positions;
 ** @param line pointer to memory of the string
 ** @return 1 if flag found, 0 if flag not found and -1 on fail
+*/
 
-int			get_flag(char **line)
+char			*get_flag(char **line)
 {
-	int i;
+	char		*fmt;
+	int			end;
+	int			opened;
+	char		*flag;
+	char		q;
 
-	i = 0;
+	end = 0;
+	opened = 0;
+	flag = NULL;
+	q = 0;
+	while (**line && is_sep(" ", **line))
+		*line += 1;
+	while ((*line)[end])
+	{
+		if (is_sep("\"\'", (*line)[end]))
+		{
+			if (!q)
+				q = (*line)[end];
+			if (q == (*line)[end])
+				opened++;
+		}
+		if (opened == 2)
+			opened = 0;
+		if (is_sep(" |&;<>", (*line)[end]) && !opened && (*line)[end - 1] != '\\')
+			break ;
+		end++;
+	}
+	fmt = bslash_quote_formater(line, end);
+	if (!ft_strncmp(fmt, "-n", 2) && ft_strlen(fmt) == 2)
+		flag = ft_strdup("-n");
+	else
+	{
+		flag = ft_strdup("");
+		*line -= end;
+	}
+	free(fmt);
+	return (flag);
+}
+
+int			get_redirection(char **line)
+{
+	int		ret;
+
+	ret = NONE;
 	if (!*line)
 		return (-1);
 	while (**line && **line == ' ')
 		(*line)++;
-	if (!ft_strncmp(*line, "-n ", 3))
-		i = 3;
-	else if (!ft_strncmp(*line, "\\-n ", 4) || !ft_strncmp(*line, "-\\n ", 4))
-		i = 4;
-	else if (!ft_strncmp(*line, "\\-\\n ", 5))
-		i = 5;
-	(*line) += i;
-	if (i > 0)
-		return(1);
-	return(i);
+	if (!ft_strncmp(*line, "<", 1))
+		ret = REDIRECTION_READ;
+	else if (!ft_strncmp(*line, ">>", 2))
+	{
+		(*line)++;
+		ret = REDIRECTION_APPEND;
+	}
+	else if (!ft_strncmp(*line, ">", 1))
+		ret = REDIRECTION_WRITE;
+	if(ret)
+		(*line)++;
+	return (ret);
 }
-*/
 
-/**ech
+/*
 ** Functions cleans all spaces from the front of the string and moves
 ** a pointer of parameter resived x positions;
 ** @param line pointer to memory of the string
 ** @return 2 if pipe separator found, 1 if comma separator found, 0 if
 ** no separator found and -1 on fail
 */
+
 int			get_sep(char **line)
 {
 	int		ret;
@@ -192,16 +175,24 @@ int			get_sep(char **line)
 	}
 	if(ret)
 		(*line)++;
+	while (**line && **line == ' ')
+		(*line)++;
+	if (**line == ';')
+	{
+		printf("syntax error\n");
+		return (-1);
+	}
 	return (ret);
 }
 
-/**
-** Functions
+/*
+** Function
 ** @param type executable to find
 ** @param line all pathes to executable available on mashine
 ** @return pointer to memory reservated string that represents a full path
 **			of executable, NULL on fail
 */
+
 char		*get_path(char *type, char *paths)
 {
 	char			**path_arr;
@@ -231,6 +222,7 @@ char		*get_path(char *type, char *paths)
 	return (full_path);
 }
 
+
 /**
  ** TODO - modify parameters to recive (char *type)
  ** TODO - get EXECUTABLE function based on recived cmd (or type)
@@ -243,17 +235,21 @@ void		*get_exe(char *type)
 	len = ft_strlen(type);
 	if (!ft_strncmp(type, "exit", len))
 		return (&s_exit);
-	if (!ft_strncmp(type, "echo", len))
+	else if (!ft_strncmp(type, "echo", len))
 		return (&s_echo);
-	if (!ft_strncmp(type, "cd", len))
+	else if (!ft_strncmp(type, "cd", len))
 		return (&s_cd);
-	if (!ft_strncmp(type, "pwd", len))
+	else if (!ft_strncmp(type, "pwd", len))
 		return (&s_pwd);
-	if (!ft_strncmp(type, "env", len))
-		return (&s_env);
-	if (!ft_strncmp(type, "export", len))
+	//else if (!ft_strncmp(type, "env", len))
+	//	return (&s_env);
+	else if (!ft_strncmp(type, "export", len))
 		return (&s_export);
-	if (!ft_strncmp(type, "unset", len))
+	else if (!ft_strncmp(type, "unset", len))
 		return (&s_unset);
+	else
+		return (&universal);
+
+	//TODO else universal
 	return (NULL);
 }

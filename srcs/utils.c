@@ -51,6 +51,8 @@ int m_error(char *type, char *content, int n)
 		ft_putendl_fd("Failed to init comandline", 1);
 	else if (n == DIR_ERROR)
 		ft_putendl_fd(": No such file or directory", 1);
+	else if (n == IDENTIFYER_ERROR)
+		ft_putendl_fd(": not a valid identifier", 1);
 	else
 		ft_putstr_fd("Undefined error.\n", 1);
 	return(1);

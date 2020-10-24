@@ -17,18 +17,18 @@ void			signal_handler(int sig)
 	if (sig == SIGINT)
 	{
 		write(STDOUT_FILENO, "\033[2D\033[J\n", 10);
-		write(STDOUT_FILENO, "\033[1D", 4);
 		put_promt();
 	}
 	if (sig == SIGQUIT)
 		write(STDOUT_FILENO, "\033[2D\033[J", 7);
 }
 
-int main(int argc, char **argv)
+int main(int argc, char **argv, char **envp)
 {
 	t_command	*cmd;
 	char 		*line = NULL;
 
+	ft_setenv("PAPA", "Mario", 1);
 	//signal(SIGINT, signal_handler);
 	signal(SIGQUIT, signal_handler);
 	cmd = NULL;
@@ -36,7 +36,8 @@ int main(int argc, char **argv)
 	{
 		if (!get_cmd(&line))
 			return (m_error(NULL, NULL, UNDEFINED_ERR));
-		init(&cmd, line);
+		if (init(&cmd, line) < 0)
+			continue ;
 		free(line);
 		if (!execute(&cmd))
 			break ;
