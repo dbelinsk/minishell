@@ -9,7 +9,7 @@
 ** @return 1 if parent function needs continue 0 if not
 */
 
-int				bckslash_handler(char **line, char *fmt, int *pos, char q)
+static int	bckslash_handler(char **line, char *fmt, int *pos, char q)
 {
 	int		j;
 
@@ -38,11 +38,11 @@ int				bckslash_handler(char **line, char *fmt, int *pos, char q)
 ** @return 1 if parent function needs continue 0 if not
 */
 
-int				errno_handler(char **line, char *fmt, int *pos, char q)
+static int	errno_handler(char **line, char *fmt, int *pos, char q)
 {
-	char		*env;
-	int			i;
-	int			j;
+	char	*env;
+	int		i;
+	int		j;
 
 	j = *pos;
 	i = 0;
@@ -66,12 +66,12 @@ int				errno_handler(char **line, char *fmt, int *pos, char q)
 ** @param pos = position register for fmt
 */
 
-void			get_env_handler(char **line, char *fmt, int *pos)
+static void	get_env_handler(char **line, char *fmt, int *pos)
 {
-	char		name[BUFSIZ];
-	char		*env;
-	int			i;
-	int			j;
+	char	name[BUFSIZ];
+	char	*env;
+	int		i;
+	int		j;
 
 	ft_bzero(name, BUFSIZ);
 	j = *pos;
@@ -101,10 +101,10 @@ void			get_env_handler(char **line, char *fmt, int *pos)
 ** @param q = current opened quote register
 */
 
-void			put_env(char **line, char *aux, int *i, char q)
+static void	put_env(char **line, char *aux, int *i, char q)
 {
-	char		*env;
-	int			j;
+	char	*env;
+	int		j;
 
 	j = *i;
 	if (bckslash_handler(line, aux, i, q))
@@ -130,10 +130,10 @@ void			put_env(char **line, char *aux, int *i, char q)
 ** @return 1 if parent function needs continue 0 if not
 */
 
-int				formater_env_handler(char **line, char *fmt, int *pos, char q)
+int			formater_env_handler(char **line, char *fmt, int *pos, char q)
 {
-	int			ret;
-	char		*tmp;
+	int		ret;
+	char	*tmp;
 
 	ret = 0;
 	tmp = *line;

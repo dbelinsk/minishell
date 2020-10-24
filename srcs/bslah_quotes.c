@@ -44,10 +44,10 @@ int				bck_slash_handler(char **line, char *fmt, int *pos, char q)
 ** @return 1 if parent function needs continue 0 if not
 */
 
-int				quote_handler(char **line, char *q, int *opened)
+static int	quote_handler(char **line, char *q, int *opened)
 {
-	char		*tmp;
-	int			ret;
+	char	*tmp;
+	int		ret;
 
 	ret = 0;
 	tmp = *line;
@@ -77,7 +77,7 @@ int				quote_handler(char **line, char *q, int *opened)
 ** Inits variables
 */
 
-void			init_variables(char **line, char **tmp, int *i, char *q)
+static void	init_variables(char **line, char **tmp, int *i, char *q)
 {
 	*tmp = *line;
 	*i = 0;
@@ -94,11 +94,11 @@ void			init_variables(char **line, char **tmp, int *i, char *q)
 ** @param end = position where to stop
 */
 
-void			do_format(char **line, char *fmt, int *opened, int end)
+static void	do_format(char **line, char *fmt, int *opened, int end)
 {
-	char		*tmp;
-	int			i;
-	char		q;
+	char	*tmp;
+	int		i;
+	char	q;
 
 	init_variables(line, &tmp, &i, &q);
 	while (*tmp && (int)(tmp - (*line)) < end)
@@ -131,10 +131,10 @@ void			do_format(char **line, char *fmt, int *opened, int end)
 ** @return string with \"'$ behaivior applied on it
 */
 
-char			*bslash_quote_formater(char **line, int end)
+char		*bslash_quote_formater(char **line, int end)
 {
-	char		fmt[BUFSIZ];
-	int			opened;
+	char	fmt[BUFSIZ];
+	int		opened;
 
 	opened = 0;
 	ft_bzero(fmt, BUFSIZ);
