@@ -87,14 +87,7 @@ int		init(t_command **cmd, char *line)
 			return (-1);
 		item.path = get_path(item.type, paths);
 		item.exe = get_exe(item.type);
-	/*	printf("fname = [%s]\n", item.fname);
-		printf("redirection = [%d]\n", item.redirection);
-		printf("content = [%s]\n", item.content);*/
-		/*printf("path = [%s]\n", item.path);
-		printf("sep = [%d]\n", item.sep);
-		printf("-------------------------------\n");*/
 		cmd_push_back(cmd, item);
-		//break ;
 	}
 	return (0);
 }

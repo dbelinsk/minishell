@@ -58,13 +58,12 @@ int		s_exit(t_command *cmd);
 int		s_echo(t_command *cmd);
 int		s_unset(t_command *cmd);
 int		is_sep(char *s, char c);
-int		flag_checker(char **ret);
 int		s_export(t_command *cmd);
 int		execute(t_command **cmd);
 int		get_redirection(char **line);
 int		ft_unsetenv(const char *name);
 int		init(t_command **cmd, char *line);
-int		m_exit(char **to_free, t_command **cmd);
+//int		m_exit(char **to_free, t_command **cmd); Not using right now
 int		m_error(char *type, char *content, int n);
 int		formater_env_handler(char **line, char *aux, int *x, char q);
 int		ft_setenv(const char *name, const char *value, int overwrite);

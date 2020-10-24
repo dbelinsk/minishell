@@ -9,11 +9,11 @@
 ** @return 1 if parent function needs continue 0 if not
 */
 
-int				bck_slash_handler(char **line, char *fmt, int *pos, char q)
+static int	bck_slash_handler(char **line, char *fmt, int *pos, char q)
 {
-	char		*tmp;
-	int			i;
-	int			ret;
+	char	*tmp;
+	int		i;
+	int		ret;
 
 	tmp = *line;
 	i = *pos;

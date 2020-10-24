@@ -6,7 +6,7 @@
 /*   By: mpernia- <mpernia-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/02 21:19:08 by mpernia-          #+#    #+#             */
-/*   Updated: 2020/10/05 13:20:11 by mpernia-         ###   ########.fr       */
+/*   Updated: 2020/10/24 21:05:24 by mpernia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,9 +58,9 @@ int m_error(char *type, char *content, int n)
 	return(1);
 }
 
-int m_exit(char **to_free, t_command **cmd)
+/*int m_exit(char **to_free, t_command **cmd)
 {
 	free(*to_free);
 	*to_free = NULL;
 	return (0);
-}
+}*/
