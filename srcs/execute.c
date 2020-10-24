@@ -5,7 +5,7 @@ void			tmp_print_item(t_command *item)
 	printf("type = [%s]\n", item->type);
 	printf("path = [%s]\n", item->path);
 	printf("content = [%s]\n", item->content);
-	printf("flag = [%d]\n", item->flag);
+	printf("flag = [%s]\n", item->flag);
 	printf("sep = [%d]\n", item->sep);
 	printf("err = [%d]\n", item->err);
 	if (item->prev)
@@ -13,7 +13,7 @@ void			tmp_print_item(t_command *item)
 		printf("prev->type = [%s]\n", item->prev->type);
 		printf("prev->path = [%s]\n", item->prev->path);
 		printf("prev->content = [%s]\n", item->prev->content);
-		printf("prev->flag = [%d]\n", item->prev->flag);
+		printf("prev->flag = [%s]\n", item->prev->flag);
 		printf("prev->sep = [%d]\n", item->prev->sep);
 		printf("prev->err = [%d]\n", item->prev->err);
 	}
@@ -22,7 +22,7 @@ void			tmp_print_item(t_command *item)
 		printf("next->type = [%s]\n", item->next->type);
 		printf("next->path = [%s]\n", item->next->path);
 		printf("next->content = [%s]\n", item->next->content);
-		printf("next->flag = [%d]\n", item->next->flag);
+		printf("next->flag = [%s]\n", item->next->flag);
 		printf("next->sep = [%d]\n", item->next->sep);
 		printf("next->err = [%d]\n", item->next->err);
 	}
@@ -49,6 +49,8 @@ void			print_all_items(t_command *tmp)
 
 int				s_exit(t_command *cmd)
 {
+	if (cmd->redirection)
+			redirect(cmd, NULL);
 	if (cmd->prev)
 		if (cmd->prev->sep == PIPE ||
 			(cmd->prev->sep == AND && cmd->prev->err))
@@ -58,26 +60,41 @@ int				s_exit(t_command *cmd)
 	return (0);
 }
 
+
+
 int				s_echo(t_command *cmd)
 {
 	pid_t	child;
 	char	*args[4];
 	int		i;
 
-	tmp_print_item(cmd);
 	i = 0;
 	args[i++] = cmd->type;
-	if (cmd->flag)
-		args[i++] = "-n";
+	args[i++] = cmd->flag;
 	args[i++] = cmd->content;
 	args[i++] = (char*)0;
+	/*if (cmd->flag)
+		ft_putstr_fd(cmd->content, 1);
+	else
+		ft_putendl_fd(cmd->content, 1);*/
+
 	if ((child= fork()) == 0)
 	{
 		if (cmd->prev)
-			if (cmd->prev->err)
+			if (cmd->prev->err && cmd->prev->sep != PIPE)
 				return (-1);
-		if (cmd->sep != PIPE)
-			execve (cmd->path, args, NULL);
+		if ((cmd->sep != PIPE))
+		{
+			if (cmd->prev && cmd->prev->sep != PIPE && cmd->prev->err)
+				return (1);
+			else
+			{
+				if (cmd->redirection)
+					redirect(cmd, cmd->content);
+				else
+					execve(cmd->path, args, NULL);
+			}
+		}
 	}
 	else if (child > 0)
 		wait(&child);
@@ -110,6 +127,8 @@ int				s_cd(t_command *cmd)
 		if (cmd->prev)
 			if (cmd->prev->err)
 				return (-1);
+		if (cmd->redirection)
+			redirect(cmd, NULL);
 		chdir(path);
 	}
 	return (1);
@@ -117,6 +136,7 @@ int				s_cd(t_command *cmd)
 
 int				s_pwd(t_command *cmd)
 {
+	char	cwd[BUFSIZ];
 	pid_t	child;
 	char	*args[2];
 
@@ -128,7 +148,17 @@ int				s_pwd(t_command *cmd)
 			if (cmd->prev->err)
 				return (-1);
 		if (cmd->sep != PIPE)
-			execve(cmd->path, args, NULL);
+		{
+			if (cmd->redirection)
+			{
+				getcwd(cwd, sizeof(cwd));
+				redirect(cmd, cwd);
+			}
+			else
+				if (execve(cmd->path, args, NULL) == -1)
+					printf("bash: %s: %s\n",cmd->path, strerror(errno));
+				//execve(cmd->path, args, NULL);
+		}
 	}
 	else if (child > 0)
 		wait(&child);
@@ -153,7 +183,14 @@ int				s_env(t_command *cmd)
 			if (cmd->prev->err && cmd->prev->sep != PIPE)
 				return (-1);
 		if (cmd->sep != PIPE)
-			execve(args[0], args, environ);
+		{
+			if (cmd->redirection)
+			{
+				redirect(cmd, NULL);
+			}
+			else
+				execve(args[0], args, environ);
+		}
 	}
 	else if (child > 0)
 		wait(&child);
@@ -174,14 +211,44 @@ int			s_export(t_command *cmd)
 	eq = (int)(val - cmd->content);
 	name[eq] = 0;
 	val++;
-	ft_setenv(name, val, 1);
+	if (cmd->prev)
+		if (cmd->prev->sep == PIPE)
+			return (1);
+	if (cmd->sep == PIPE)
+		return (1);
+	if (cmd->redirection)
+			redirect(cmd, NULL);
+	if (ft_setenv(name, val, 1) < 0)
+		m_error(cmd->type, val, IDENTIFYER_ERROR);
 	return (1);
 }
 
 int			s_unset(t_command *cmd)
 {
+	if (cmd->redirection)
+			redirect(cmd, NULL);
 	ft_unsetenv(cmd->content);
 	return (1);
+}
+
+void		universal(t_command *cmd)
+{
+	char	cwd[BUFSIZ];
+	pid_t	child;
+	char	*args[2];
+
+	args[0] = cmd->type;
+	args[1] = (char*)0;
+	if ((child= fork()) == 0)
+	{
+		if (execve(cmd->path, args, NULL) == -1)
+			printf("bash: %s: %s\n",cmd->path, strerror(errno));
+	}
+	else if (child > 0)
+		wait(&child);
+	else
+		return ;
+	return ;
 }
 
 /**
@@ -196,6 +263,7 @@ int				execute(t_command **cmd)
 	aux = *cmd;
 	while (aux)
 	{
+		//tmp_print_item(aux);
 		if (aux->exe)
 		{
 			if ((ret = aux->exe(aux)) < 0)
